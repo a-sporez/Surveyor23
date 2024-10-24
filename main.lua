@@ -1,7 +1,18 @@
-local love = require('love')
+--[[
+Comments are on top of body.
+Manual luacheck on top of file.
+Ayu Darkvenom VS Code color scheme.
+--]]
+-- luacheck: globals isMenu
+-- luacheck: ignore dt
+-- luacheck: globals enableRunning
+-- luacheck: globals isRunning
+-- luacheck: globals enableMenu
+local love = require "love"
 -- imports
-local Buttons = require('src.buttons')
-local inputHandler = require('src.inputHandler')
+local Buttons = require('src/buttons')
+local inputHandler = require('src/inputHandler')
+--local Entities = require('src/entities')
 -- stored values
 local windowCentreX = love.graphics.getWidth() / 2
 local windowCentreY = love.graphics.getHeight() / 2
@@ -18,6 +29,11 @@ local program = {
         running = false,
     }
 }
+
+function enableMenu()
+    program.state['menu'] = true
+    program.state['running'] = false
+end
 
 function isMenu()
     return program.state['menu']
@@ -39,16 +55,6 @@ function love.load()
     inputHandler.setStateButtons(stateButtons)
 end
 
-function love.mousepressed(x, y, button, istouch, presses)
-    inputHandler.mousepressed(x, y, button, istouch, presses)
-end
-
-function love.keypressed(key)
-    if key == 'escape' then
-        love.event.quit()
-    end
-end
-
 function love.update(dt)
     -- change some values based on your actions
 
@@ -57,8 +63,16 @@ end
 function love.draw()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     if isMenu() then
-        stateButtons.menu_state.start_button:draw(windowCentreX, windowCentreY, 20, 10)
+        Buttons.drawMenuButtons(stateButtons.menu_state, windowCentreX, windowCentreY)
     elseif isRunning() then
         love.graphics.print('splash', windowCentreX, windowCentreY)
     end
+end
+
+function love.mousepressed(x, y, button)
+    inputHandler.mousepressed(x, y, button)
+end
+
+function love.keypressed(key)
+    inputHandler.keypressed(key)
 end
