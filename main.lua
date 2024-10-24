@@ -1,4 +1,8 @@
 local love = require('love')
+-- luacheck: globals isMenu
+-- luacheck: ignore dt
+-- luacheck: globals enableRunning
+-- luacheck: globals isRunning
 -- imports
 local Buttons = require('src.buttons')
 local inputHandler = require('src.inputHandler')
@@ -39,16 +43,6 @@ function love.load()
     inputHandler.setStateButtons(stateButtons)
 end
 
-function love.mousepressed(x, y, button, istouch, presses)
-    inputHandler.mousepressed(x, y, button, istouch, presses)
-end
-
-function love.keypressed(key)
-    if key == 'escape' then
-        love.event.quit()
-    end
-end
-
 function love.update(dt)
     -- change some values based on your actions
 
@@ -61,4 +55,12 @@ function love.draw()
     elseif isRunning() then
         love.graphics.print('splash', windowCentreX, windowCentreY)
     end
+end
+
+function love.mousepressed(x, y, button)
+    inputHandler.mousepressed(x, y, button)
+end
+
+function love.keypressed(key)
+    inputHandler.keypressed(key)
 end

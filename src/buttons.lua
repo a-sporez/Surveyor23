@@ -1,5 +1,4 @@
 local love = require('love')
-
 local Buttons = {}
 
 function Buttons.newButton(text, func, func_param, sprite_path, width, height)
@@ -57,12 +56,12 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
             love.graphics.setColor(1, 1, 1)
         end
     }
-
 end
 
 function Buttons.createMenuButton(enableRunning)
     local MenuButton = {}
-    MenuButton.start_button = Buttons.newButton("Start", enableRunning, nil, 'assets/sprites/smallGreenButton.png', 96, 36)
+    MenuButton.start_button = Buttons.newButton("Start", enableRunning, nil,
+    'assets/sprites/smallGreenButton.png', 96, 36)
 
     return MenuButton
 end

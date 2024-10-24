@@ -1,3 +1,6 @@
+local love = require('love')
+-- luacheck: globals isRunning
+-- luacheck: globals isMenu
 local inputHandler = {}
 local stateButtons = nil  -- Declare stateButtons as nil initially
 
@@ -12,7 +15,21 @@ function inputHandler.setStateButtons(buttons)
     stateButtons = buttons
 end
 
-function inputHandler.mousepressed(x, y, button, istouch, presses)
+-- Define the new keypressed function
+function inputHandler.keypressed(key)
+    -- Handle the 'escape' key to quit the game
+    if key == 'escape' then
+        love.event.quit()
+    end
+
+    -- You can add more key bindings or actions here if needed
+    -- Example:
+    -- if key == 'space' then
+    --     -- Do something when spacebar is pressed
+    -- end
+end
+
+function inputHandler.mousepressed(x, y, button)
     -- Ensure stateButtons is not nil before using it
     if stateButtons == nil then
         print("Error: stateButtons not initialized")
