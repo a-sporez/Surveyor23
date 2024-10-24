@@ -1,12 +1,18 @@
-local love = require('love')
+--[[
+Comments are on top of body.
+Manual luacheck on top of file.
+Ayu Darkvenom VS Code color scheme.
+--]]
 -- luacheck: globals isMenu
 -- luacheck: ignore dt
 -- luacheck: globals enableRunning
 -- luacheck: globals isRunning
+-- luacheck: globals enableMenu
+local love = require "love"
 -- imports
 local Buttons = require('src/buttons')
 local inputHandler = require('src/inputHandler')
-local Entities = require('src/entities')
+--local Entities = require('src/entities')
 -- stored values
 local windowCentreX = love.graphics.getWidth() / 2
 local windowCentreY = love.graphics.getHeight() / 2
