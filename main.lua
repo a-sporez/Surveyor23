@@ -4,8 +4,9 @@ local love = require('love')
 -- luacheck: globals enableRunning
 -- luacheck: globals isRunning
 -- imports
-local Buttons = require('src.buttons')
-local inputHandler = require('src.inputHandler')
+local Buttons = require('src/buttons')
+local inputHandler = require('src/inputHandler')
+local Entities = require('src/entities')
 -- stored values
 local windowCentreX = love.graphics.getWidth() / 2
 local windowCentreY = love.graphics.getHeight() / 2
@@ -22,6 +23,11 @@ local program = {
         running = false,
     }
 }
+
+function enableMenu()
+    program.state['menu'] = true
+    program.state['running'] = false
+end
 
 function isMenu()
     return program.state['menu']
@@ -51,7 +57,8 @@ end
 function love.draw()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     if isMenu() then
-        stateButtons.menu_state.start_button:draw(windowCentreX, windowCentreY, 20, 10)
+        stateButtons.menu_state.start_button:draw(windowCentreX - 48, windowCentreY - 18, 20, 10)
+        stateButtons.menu_state.exit_button:draw(windowCentreX - 48, windowCentreY + 18, 20, 10)
     elseif isRunning() then
         love.graphics.print('splash', windowCentreX, windowCentreY)
     end

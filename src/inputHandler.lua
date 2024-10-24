@@ -3,6 +3,8 @@ local love = require('love')
 -- luacheck: globals isMenu
 local inputHandler = {}
 local stateButtons = nil  -- Declare stateButtons as nil initially
+--local Entities = require(src.entities)
+
 
 local cursor = {
     radius = 2,
@@ -19,7 +21,7 @@ end
 function inputHandler.keypressed(key)
     -- Handle the 'escape' key to quit the game
     if key == 'escape' then
-        love.event.quit()
+        enableMenu()
     end
 
     -- You can add more key bindings or actions here if needed

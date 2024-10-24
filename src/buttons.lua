@@ -63,6 +63,9 @@ function Buttons.createMenuButton(enableRunning)
     MenuButton.start_button = Buttons.newButton("Start", enableRunning, nil,
     'assets/sprites/smallGreenButton.png', 96, 36)
 
+    MenuButton.exit_button = Buttons.newButton("Exit", love.event.quit, nil,
+    'assets/sprites/smallGreenButton.png', 96, 36)
+
     return MenuButton
 end
 
