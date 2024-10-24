@@ -69,4 +69,10 @@ function Buttons.createMenuButton(enableRunning)
     return MenuButton
 end
 
+-- Function to draw all menu buttons
+function Buttons.drawMenuButtons(menuButtons, windowCentreX, windowCentreY)
+    menuButtons.start_button:draw(windowCentreX - 48, windowCentreY - 18, 20, 10)
+    menuButtons.exit_button:draw(windowCentreX - 48, windowCentreY + 18, 20, 10)
+end
+
 return Buttons

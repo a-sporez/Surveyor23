@@ -63,8 +63,7 @@ end
 function love.draw()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     if isMenu() then
-        stateButtons.menu_state.start_button:draw(windowCentreX - 48, windowCentreY - 18, 20, 10)
-        stateButtons.menu_state.exit_button:draw(windowCentreX - 48, windowCentreY + 18, 20, 10)
+        Buttons.drawMenuButtons(stateButtons.menu_state, windowCentreX, windowCentreY)
     elseif isRunning() then
         love.graphics.print('splash', windowCentreX, windowCentreY)
     end
