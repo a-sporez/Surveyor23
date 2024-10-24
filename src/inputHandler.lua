@@ -1,4 +1,5 @@
-local love = require('love')
+-- local love = require('love')
+-- luacheck: globals enableMenu
 -- luacheck: globals isRunning
 -- luacheck: globals isMenu
 local inputHandler = {}
@@ -38,12 +39,16 @@ function inputHandler.mousepressed(x, y, button)
         return
     end
 
-    if not isRunning() then
+    if isMenu() then
         if button == 1 then
-            if isMenu() then
-                for index in pairs(stateButtons.menu_state) do
-                    stateButtons.menu_state[index]:checkPressed(x, y, cursor.radius)
-                end
+            for index in pairs(stateButtons.menu_state) do
+                stateButtons.menu_state[index]:checkPressed(x, y, cursor.radius)
+            end
+        end
+    elseif isRunning() then
+        if button == 1 then
+            for index in pairs(stateButtons.running_state) do
+                stateButtons.running_state[index]:checkPressed(x, y, cursor.radius)
             end
         end
     end
