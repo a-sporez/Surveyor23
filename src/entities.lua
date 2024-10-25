@@ -2,63 +2,29 @@ local love = require('love')
 
 local Entities = {}
 
-function Entities.newEntity(x, y, width, height, speed)
+function Entities.newEntity(x, y, radius, color)
     return {
         x = x or 100,
         y = y or 100,
-        width = width or 32,
-        height = height or 32,
-        speed = speed or 10,
-        selected = false,
-        destination = {x = x, y = y},
+        radius = radius or 10,
+        color = color or {1, 1, 1},
 
--- declare the base methods for Entities
-    update = function (self, dt)
-        if self.x ~= self.destination.x or self.y ~= self.destination.y then
-            local dx = self.destination.x - self.x
-            local dy = self.destination.y - self.y
-            local dist = math.sqrt(dx + dx * dy + dy)
-
-            if dist > 1 then
-                local dirX = dx / dist
-                local dirY = dy / dist
-                self.x = self.x + dirX * self.speed * dt
-                self.y = self.y + dirY * self.speed * dt
-            end
-        end
-    end,
-
-    draw = function (self)
-        if self.selected then
-            love.graphics.setColor(0, 1, 0)
-        else
+        draw = function (self)
+            love.graphics.setColor(self.color)
+            love.graphics.circle('fill', self.x, self.y, self.radius)
             love.graphics.setColor(1, 1, 1)
         end
-        love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-    end
     }
 end
 
-function Entities.newPlayer(x, y)
-    local player = Entities.newEntity(x, y, 24, 24)
--- player specific propertuies
-    player.isPlayer = true
-    player.speed = 20
+function Entities.createGreenEntity()
+    local greenEntity = Entities.newEntity(800, 200, 25, {0, 1, 0})
+    return greenEntity
+end
 
--- Override the draw method for the player to show selection state
-    player.draw = function(self)
-        if self.selected then
-            love.graphics.setColor(0, 1, 0)  -- Green if selected
-        else
-            love.graphics.setColor(1, 1, 1)  -- White otherwise
-        end
-
--- Draw the player's rectangle
-        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-        love.graphics.setColor(1, 1, 1)  -- Reset color
-    end
-
-    return player
+function Entities.createRedEntity()
+    local redEntity = Entities.newEntity(200, 800, 20, {1, 0, 0})
+    return redEntity
 end
 
 return Entities

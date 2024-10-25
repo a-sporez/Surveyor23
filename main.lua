@@ -3,8 +3,9 @@ Comments are on top of body.
 Manual luacheck on top of file.
 Ayu Darkvenom VS Code color scheme.
 --]]
--- luacheck: globals isMenu
 -- luacheck: ignore dt
+-- luacheck: globals entities
+-- luacheck: globals isMenu
 -- luacheck: globals enableRunning
 -- luacheck: globals isRunning
 -- luacheck: globals enableMenu
@@ -12,7 +13,8 @@ local love = require "love"
 -- imports
 local Buttons = require('src/buttons')
 local inputHandler = require('src/inputHandler')
---local Entities = require('src/entities')
+local Entities = require('src/entities')
+print(Entities)
 
 -- stored values
 local windowCentreX = love.graphics.getWidth() / 2
@@ -53,11 +55,19 @@ function isRunning()
 end
 
 function love.load()
--- The following lines assign "classes" to tables to act as objects.
+
     stateButtons.menu_state = Buttons.createMenuButton(enableRunning)
+
     stateButtons.running_state = Buttons.createRunningButton(enableMenu)
+
     inputHandler.setStateButtons(stateButtons)
+
 end
+
+local entities = {
+    greenEntity = Entities.createGreenEntity(),
+    redEntity = Entities.createRedEntity()
+}
 
 function love.update(dt)
     -- change some values based on your actions
@@ -70,6 +80,9 @@ function love.draw()
         Buttons.drawMenuButtons(stateButtons.menu_state, windowCentreX, windowCentreY)
     elseif isRunning() then
         Buttons.drawRunningButtons(stateButtons.running_state, windowCentreX, windowCentreY)
+
+        entities.greenEntity:draw()
+        entities.redEntity:draw()
     end
 end
 

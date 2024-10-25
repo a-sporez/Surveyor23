@@ -9,7 +9,47 @@ I will try to keep a somewhat coherent journal of the development however code s
 
 [Setup](#setup)
 
+# Source Content
+
+#### Modules
+
+ * DONE:
+    - Game States
+    - Buttons
+    - Input Handler
+
+ * TODO:
+    - Entities
+    - Console
+    - Animate sprites
+    - Collisions
+    - Entity Characteristics
+    - Entity Modules
+    - Scene switches
+    - Settings menu
+
+#### Sprites
+
+ * TODO:
+    - Structure
+
+#### Sound
+
+ * TODO:
+    - Structure
+
+#### Story
+
+ * TODO:
+    - Structure
+
 # Setup
+
+I find metatables to be quite confusing, in fact I still find regular tables confusing when adding functions in them... but I still wanna OOP so here goes.
+
+The pattern I want to follow is to have an initial class that returns a table with base function, then create subclasses to be assigned to different game states. It's not a good thing to ahead too much but I'd like to establish the same structure with game scenes but I really have to play around with 1 single scene and get comfortable using this method.
+
+The initial setup already implements one of the constructor functions inside of the Buttons class.
 
 main.lua
 
@@ -192,3 +232,5 @@ end
 
 return inputHandler
 ```
+
+It probably takes a seasoned programmer a few minutes to cook this code up, it took me about two weeks. xD
