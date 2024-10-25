@@ -70,7 +70,14 @@ local entities = { -- luacheck: ignore 211
 }
 
 function love.update(dt)
---    print('nothing to update')
+
+    for _, entity in ipairs(Entities.greenEntities) do
+        entity:moveToTarget(dt)
+    end
+    for _, entity in ipairs(Entities.redEntities) do
+        entity:moveToTarget(dt)
+    end
+
 end
 
 function love.draw()

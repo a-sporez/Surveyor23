@@ -45,6 +45,17 @@ function inputHandler.mousepressed(x, y, button)
             for index in pairs(stateButtons.running_state) do
                 stateButtons.running_state[index]:checkPressed(x, y, cursor.radius)
             end
+        elseif button == 2 then
+            for _, entity in ipairs(Entities.greenEntities) do
+                if entity.selected then
+                    entity.target = {x = x, y = y}
+                end
+            end
+            for _, entity in ipairs(Entities.redEntities) do
+                if entity.selected then
+                    entity.target = {x = x, y = y}
+                end
+            end
         end
     end
 end

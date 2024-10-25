@@ -10,6 +10,7 @@ function Entities.newEntity(x, y, radius, color)
         radius = radius or 10,
         color = color or {1, 1, 1},
         selected = false,
+        target = nil,
 
 -- toggle selection using a not statement
         toggleSelected = function (self)
@@ -20,6 +21,21 @@ function Entities.newEntity(x, y, radius, color)
             local dx = mouse_x - self.x
             local dy = mouse_y - self.y
             return (dx * dx + dy * dy) <= (self.radius * self.radius)
+        end,
+
+        moveToTarget = function (self, dt)
+            if self.target then
+                local dx, dy = self.target.x - self.x, self.target.y - self.y
+                local distance = math.sqrt(dx * dx + dy * dy)
+
+                if distance > 1 then
+                    local speed = 100
+                    self.x = self.x + (dx / distance) * speed * dt
+                    self.y = self.y + (dy / distance) * speed * dt
+                else
+                    self.target = nil
+                end
+            end
         end,
 
         draw = function (self)
@@ -43,6 +59,7 @@ function Entities.createGreenEntity(count)
         local greenEntity = Entities.newEntity(
             800 + (i * 50), 200 + (i * 50), 25, {0, 1, 0}
         )
+        greenEntity.name = "greenEntity" .. i
         table.insert(Entities.greenEntities, greenEntity)
     end
 end
@@ -53,6 +70,7 @@ function Entities.createRedEntity(count)
         local redEntity = Entities.newEntity(
             200 + (i * 50), 600 + (i * 50), 20, {1, 0, 0}
         )
+        redEntity.name = "redEntity" .. i
         table.insert(Entities.redEntities, redEntity)
     end
 end
