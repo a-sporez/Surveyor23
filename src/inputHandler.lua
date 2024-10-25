@@ -4,7 +4,7 @@
 -- luacheck: globals isMenu
 local inputHandler = {}
 local stateButtons = nil  -- Declare stateButtons as nil initially
---local Entities = require(src.entities)
+local Entities = require('src/entities')
 
 
 local cursor = {
@@ -24,12 +24,6 @@ function inputHandler.keypressed(key)
     if key == 'escape' then
         enableMenu()
     end
-
-    -- You can add more key bindings or actions here if needed
-    -- Example:
-    -- if key == 'space' then
-    --     -- Do something when spacebar is pressed
-    -- end
 end
 
 function inputHandler.mousepressed(x, y, button)
@@ -47,6 +41,7 @@ function inputHandler.mousepressed(x, y, button)
         end
     elseif isRunning() then
         if button == 1 then
+            Entities.checkSelection(x, y)
             for index in pairs(stateButtons.running_state) do
                 stateButtons.running_state[index]:checkPressed(x, y, cursor.radius)
             end

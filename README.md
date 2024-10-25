@@ -13,15 +13,17 @@ I will try to keep a somewhat coherent journal of the development however code s
 
 #### Modules
 
- * DONE:
     - Game States
     - Buttons
     - Input Handler
+    WIP:
+    - Entities base methods
 
  * TODO:
-    - Entities
+    - *Entities base methods*
     - Console
     - Animate sprites
+        + .
     - Collisions
     - Entity Characteristics
     - Entity Modules
@@ -30,8 +32,14 @@ I will try to keep a somewhat coherent journal of the development however code s
 
 #### Sprites
 
+    - smallGreenButton.png
+
  * TODO:
-    - Structure
+    - Entities
+        + .
+
+    - Animations sprite sheets
+        + .
 
 #### Sound
 
@@ -47,30 +55,29 @@ I will try to keep a somewhat coherent journal of the development however code s
 
 [back to index](#index)
 
-#### 0.01 fork https://github.com/Asporez/Surveyor23/tree/0.01
+### 0.01 fork https://github.com/Asporez/Surveyor23/tree/0.01
 
 I find metatables to be quite confusing, in fact I still find regular tables confusing when adding functions in them... but I still wanna OOP so here goes.
 
 The pattern I want to follow is to have an initial class that returns a table with base function, then create subclasses to be assigned to different game states. It's not a good thing to ahead too much but I'd like to establish the same structure with game scenes but I really have to play around with 1 single scene and get comfortable using this method.
 
-The initial setup already implements one of the constructor functions inside of the Buttons class.
+#### main.lua
 
-main.lua
+
+- **_stateButtons_** stores buttons in tables that are called depending on game state. 
 
 ```lua
-local love = require('love')
--- imports
-local Buttons = require('src.buttons')
-local inputHandler = require('src.inputHandler')
--- stored values
-local windowCentreX = love.graphics.getWidth() / 2
-local windowCentreY = love.graphics.getHeight() / 2
-
 -- initialize state buttons
 local stateButtons = {
-    menu_state = {}
+    menu_state = {},
+    running_state = {}
 }
+```
 
+- **_program_** is a table that acts as a class which defines the "location" of the user within the program.
+- **_state_** is a table that stores the different states as bools, the reasoning behind this structure is to be able to store variables and functions that act on game states as a whole.
+
+```lua
 -- program table acts as a class with state as it's subclass
 local program = {
     state = {
@@ -78,6 +85,16 @@ local program = {
         running = false,
     }
 }
+```
+
+- **_enableMenu()_** and **enableRunning** are functions to switch bools within the program.state table
+- **_isMenu()_** and **_isRunning()_** are helper functions to call for states globally and avoid returning a nil value on bools
+
+```lua
+function enableMenu()
+    program.state['menu'] = true
+    program.state['running'] = false
+end
 
 function isMenu()
     return program.state['menu']
@@ -93,27 +110,42 @@ end
 function isRunning()
     return program.state['running']
 end
+```
 
+- **_love.load()_** is Love2D's main input on program start
+- **_stateButtons.menu_state_** initializes the **_createMenuButtons()_** module and stores it in the menu_state table.
+- **_inputHandler.setStateButtons(stateButtons)_** initializes the **_inputHandler_** module.
+
+```lua
 function love.load()
     stateButtons.menu_state = Buttons.createMenuButton(enableRunning)
     inputHandler.setStateButtons(stateButtons)
 end
+```
 
-function love.mousepressed(x, y, button, istouch, presses)
-    inputHandler.mousepressed(x, y, button, istouch, presses)
+- Both of those functions pass along the registered input to the **_inputHandler_** module.
+
+```lua
+function love.mousepressed(x, y, button)
+    inputHandler.mousepressed(x, y, button)
 end
 
 function love.keypressed(key)
-    if key == 'escape' then
-        love.event.quit()
-    end
+    inputHandler.keypressed(key)
 end
+```
 
+- Nothing to update for now since everything is managed through the program states and buttons, still going to put it as it is the entry point of Love2D's core loop.
+
+```lua
 function love.update(dt)
-    -- change some values based on your actions
-
+    -- body
 end
+```
 
+- 
+
+```lua
 function love.draw()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     if isMenu() then
@@ -134,7 +166,9 @@ local Buttons = {}
 function Buttons.newButton(text, func, func_param, sprite_path, width, height)
 -- use graphics.newImage to declare the usage of sprite_path
     local buttonSprite = love.graphics.newImage(sprite_path)
+```
 
+```lua
 -- return the table that will define the methods for buttons
     return {
         width = width or 20,
@@ -146,7 +180,9 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
         button_y = 0,
         text_x = 0,
         text_y = 0,
+```
 
+```lua
 -- Function to execute paramereters if mouse is pressed over a button.
         checkPressed = function(self, mouse_x, mouse_y, cursor_radius)
             if (mouse_x + cursor_radius >= self.button_x and
@@ -160,8 +196,9 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
                 end
             end
         end,
+```
 
-
+```lua
         draw = function (self, button_x, button_y, text_x, text_y)
             self.button_x = button_x or self.button_x
             self.button_y = button_y or self.button_y
@@ -188,6 +225,9 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
     }
 
 end
+```
+
+```lua
 
 function Buttons.createMenuButton(enableRunning)
     local MenuButton = {}
@@ -210,12 +250,16 @@ local cursor = {
     x = 1,
     y = 1
 }
+```
 
+```lua
 -- Function to set stateButtons from main.lua
 function inputHandler.setStateButtons(buttons)
     stateButtons = buttons
 end
+```
 
+```lua
 function inputHandler.mousepressed(x, y, button, istouch, presses)
     -- Ensure stateButtons is not nil before using it
     if stateButtons == nil then

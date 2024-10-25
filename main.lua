@@ -6,7 +6,6 @@ Alu Dark - Pycharm High Contrast
 Ayu Darkvenom
 --]]
 -- luacheck: ignore dt
--- luacheck: globals entities
 -- luacheck: globals isMenu
 -- luacheck: globals enableRunning
 -- luacheck: globals isRunning
@@ -65,7 +64,7 @@ function love.load()
 
 end
 
-local entities = {
+local entities = { -- luacheck: ignore 211
     greenEntity = Entities.createGreenEntity(),
     redEntity = Entities.createRedEntity()
 }
