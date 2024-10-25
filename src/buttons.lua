@@ -58,6 +58,7 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
     }
 end
 
+-- Buttons in the menu phase are created and stored here.
 function Buttons.createMenuButton(enableRunning)
     local MenuButton = {}
     MenuButton.start_button = Buttons.newButton("Start", enableRunning, nil,
@@ -67,6 +68,21 @@ function Buttons.createMenuButton(enableRunning)
     'assets/sprites/smallGreenButton.png', 96, 36)
 
     return MenuButton
+end
+
+-- Buttons in the running phase are created and stored here.
+function Buttons.createRunningButton(enableMenu)
+    local RunningButton = {}
+    RunningButton.menu_button = Buttons.newButton("Menu", enableMenu, nil,
+    'assets/sprites/smallGreenButton.png', 96, 36)
+
+    return RunningButton
+end
+
+-- Function to draw buttons used in the running interface.
+
+function Buttons.drawRunningButtons(runningButtons, windowCentreX, windowCentreY)
+    runningButtons.menu_button:draw(windowCentreX - 48, windowCentreY + 36, 20, 10)
 end
 
 -- Function to draw all menu buttons
