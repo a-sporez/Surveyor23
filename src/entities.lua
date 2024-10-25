@@ -1,6 +1,8 @@
 -- luacheck: ignore i count
 local love = require('love')
 
+local colors = require('src.lib.colors')
+
 local Entities = {}
 
 function Entities.newEntity(x, y, radius, color)
@@ -8,7 +10,7 @@ function Entities.newEntity(x, y, radius, color)
         x = x or 100,
         y = y or 100,
         radius = radius or 10,
-        color = color or {1, 1, 1},
+        color = color or colors.white,
         selected = false,
         target = nil,
 
@@ -40,12 +42,12 @@ function Entities.newEntity(x, y, radius, color)
 
         draw = function (self)
             if self.selected then
-                love.graphics.setColor(1, 1, 0)
+                love.graphics.setColor(colors.yellow)
             else
                 love.graphics.setColor(self.color)
             end
             love.graphics.circle('fill', self.x, self.y, self.radius)
-            love.graphics.setColor(1, 1, 1)
+            love.graphics.setColor(colors.white)
         end
     }
 end
@@ -57,7 +59,7 @@ function Entities.createGreenEntity(count)
     local count = count or 5
     for i = 1, count do
         local greenEntity = Entities.newEntity(
-            800 + (i * 50), 200 + (i * 50), 25, {0, 1, 0}
+            800 + (i * 50), 200 + (i * 50), 25, colors.green
         )
         greenEntity.name = "greenEntity" .. i
         table.insert(Entities.greenEntities, greenEntity)
@@ -68,7 +70,7 @@ function Entities.createRedEntity(count)
     local count = count or 3
     for i = 1, count do
         local redEntity = Entities.newEntity(
-            200 + (i * 50), 600 + (i * 50), 20, {1, 0, 0}
+            200 + (i * 50), 600 + (i * 50), 20, colors.red
         )
         redEntity.name = "redEntity" .. i
         table.insert(Entities.redEntities, redEntity)

@@ -4,8 +4,8 @@
 -- luacheck: globals isMenu
 local inputHandler = {}
 local stateButtons = nil  -- Declare stateButtons as nil initially
-local Entities = require('src/entities')
-
+local Entities = require('src.entities')
+local Console = require('src.console')
 
 local cursor = {
     radius = 2,
@@ -18,9 +18,11 @@ function inputHandler.setStateButtons(buttons)
     stateButtons = buttons
 end
 
--- Define the new keypressed function
+-- Define the keypressed functions
 function inputHandler.keypressed(key)
-    -- Handle the 'escape' key to quit the game
+    if key == 'c' then
+        Console:print("Key 'c' was pressed!")
+    end
     if key == 'escape' then
         enableMenu()
     end

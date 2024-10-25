@@ -12,9 +12,10 @@ Ayu Darkvenom
 -- luacheck: globals enableMenu
 local love = require "love"
 -- imports
-local Buttons = require('src/buttons')
-local inputHandler = require('src/inputHandler')
-local Entities = require('src/entities')
+local Console = require('src.console')
+local Buttons = require('src.buttons')
+local inputHandler = require('src.inputHandler')
+local Entities = require('src.entities')
 
 -- stored values
 local windowCentreX = love.graphics.getWidth() / 2
@@ -55,13 +56,10 @@ function isRunning()
 end
 
 function love.load()
-
     stateButtons.menu_state = Buttons.createMenuButton(enableRunning)
-
     stateButtons.running_state = Buttons.createRunningButton(enableMenu)
-
     inputHandler.setStateButtons(stateButtons)
-
+    Console:initialize()
 end
 
 local entities = { -- luacheck: ignore 211
@@ -70,14 +68,12 @@ local entities = { -- luacheck: ignore 211
 }
 
 function love.update(dt)
-
     for _, entity in ipairs(Entities.greenEntities) do
         entity:moveToTarget(dt)
     end
     for _, entity in ipairs(Entities.redEntities) do
         entity:moveToTarget(dt)
     end
-
 end
 
 function love.draw()
@@ -85,8 +81,8 @@ function love.draw()
     if isMenu() then
         Buttons.drawMenuButtons(stateButtons.menu_state, windowCentreX, windowCentreY)
     elseif isRunning() then
+        Console:draw()
         Buttons.drawRunningButtons(stateButtons.running_state, windowCentreX, windowCentreY)
-
         Entities.drawGreenEntities()  -- Draw all green entities
         Entities.drawRedEntities()    -- Draw all red entities
     end
