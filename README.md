@@ -143,7 +143,9 @@ function love.update(dt)
 end
 ```
 
-- 
+- **_love.graphics.setDefaultFilter('nearest', 'nearest')_** enables lossless transformation of images.
+- We draw the button here for now, it will be refactored later but I think it's important for me to detail the refactoring to some extent until I feel I have established a good set of methods.
+- This is where we use **_isMenu()_** and **_isRunning()_** checks first.
 
 ```lua
 function love.draw()
@@ -156,7 +158,9 @@ function love.draw()
 end
 ```
 
-src/buttons.lua
+#### src/buttons.lua
+
+This is the method I would like to get comfortable with going forward, when I feel comfortable with it I will move on to metatables for things like dynamic inventories and modular systems.
 
 ```lua
 local love = require('love')
@@ -223,7 +227,6 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
             love.graphics.setColor(1, 1, 1)
         end
     }
-
 end
 ```
 
