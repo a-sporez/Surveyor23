@@ -1,3 +1,5 @@
+-- luacheck: ignore i
+-- luacheck: globals count
 local love = require('love')
 
 local Entities = {}
@@ -17,14 +19,41 @@ function Entities.newEntity(x, y, radius, color)
     }
 end
 
-function Entities.createGreenEntity()
-    local greenEntity = Entities.newEntity(800, 200, 25, {0, 1, 0})
-    return greenEntity
+Entities.greenEntities = {}
+Entities.redEntities = {}
+
+function Entities.createGreenEntity(count)
+    local count = 5
+    for i = 1, count do
+        local greenEntity = Entities.newEntity(
+            800 + (i * 50), 200 + (i * 50), 25, {0, 1, 0}
+        )
+        table.insert(Entities.greenEntities, greenEntity)
+    end
 end
 
-function Entities.createRedEntity()
-    local redEntity = Entities.newEntity(200, 800, 20, {1, 0, 0})
-    return redEntity
+function Entities.createRedEntity(count)
+    local count = 3
+    for i = 1, count do
+        local redEntity = Entities.newEntity(
+            200 + (i * 50), 600 + (i * 50), 20, {1, 0, 0}
+        )
+        table.insert(Entities.redEntities, redEntity)
+    end
+end
+
+-- Function to draw all green entities
+function Entities.drawGreenEntities()
+    for _, entity in ipairs(Entities.greenEntities) do
+        entity:draw()
+    end
+end
+
+-- Function to draw all red entities
+function Entities.drawRedEntities()
+    for _, entity in ipairs(Entities.redEntities) do
+        entity:draw()
+    end
 end
 
 return Entities

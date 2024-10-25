@@ -1,7 +1,9 @@
 --[[
 Comments are on top of body.
 Manual luacheck on top of file.
-Ayu Darkvenom VS Code color scheme.
+ VS Code color schemes:
+Alu Dark - Pycharm High Contrast
+Ayu Darkvenom
 --]]
 -- luacheck: ignore dt
 -- luacheck: globals entities
@@ -14,7 +16,6 @@ local love = require "love"
 local Buttons = require('src/buttons')
 local inputHandler = require('src/inputHandler')
 local Entities = require('src/entities')
-print(Entities)
 
 -- stored values
 local windowCentreX = love.graphics.getWidth() / 2
@@ -70,8 +71,7 @@ local entities = {
 }
 
 function love.update(dt)
-    -- change some values based on your actions
-
+--    print('nothing to update')
 end
 
 function love.draw()
@@ -81,8 +81,8 @@ function love.draw()
     elseif isRunning() then
         Buttons.drawRunningButtons(stateButtons.running_state, windowCentreX, windowCentreY)
 
-        entities.greenEntity:draw()
-        entities.redEntity:draw()
+        Entities.drawGreenEntities()  -- Draw all green entities
+        Entities.drawRedEntities()    -- Draw all red entities
     end
 end
 
