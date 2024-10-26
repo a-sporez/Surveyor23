@@ -77,20 +77,6 @@ function Entities.createRedEntity(count)
     end
 end
 
--- Function to draw all green entities
-function Entities.drawGreenEntities()
-    for _, entity in ipairs(Entities.greenEntities) do
-        entity:draw()
-    end
-end
-
--- Function to draw all red entities
-function Entities.drawRedEntities()
-    for _, entity in ipairs(Entities.redEntities) do
-        entity:draw()
-    end
-end
-
 function Entities.checkSelection(x, y)
     for _, entity in ipairs(Entities.greenEntities) do
         if entity:checkPressed(x, y) then
@@ -102,6 +88,20 @@ function Entities.checkSelection(x, y)
         if entity:checkPressed(x, y) then
             entity:toggleSelected()
         end
+    end
+end
+
+-- Function to draw all green entities
+function Entities.drawGreenEntities()
+    for _, entity in ipairs(Entities.greenEntities) do
+        entity:draw()
+    end
+end
+
+-- Function to draw all red entities
+function Entities.drawRedEntities()
+    for _, entity in ipairs(Entities.redEntities) do
+        entity:draw()
     end
 end
 
