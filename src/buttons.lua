@@ -4,11 +4,13 @@ local Buttons = {}
 function Buttons.newButton(text, func, func_param, sprite_path, width, height)
 -- use graphics.newImage to declare the usage of sprite_path
     local buttonSprite = love.graphics.newImage(sprite_path)
-
+-- get dimensions of the sprite to avoid hardcoding
+    local spriteWidth = buttonSprite:getWidth()
+    local spriteHeight = buttonSprite:getHeight()
 -- return the table that will define the methods for buttons
     return {
-        width = width or 20,
-        height = height or 20,
+        width = width or spriteWidth,
+        height = height or spriteHeight,
         func = func or function() print("no functions attached") end,
         func_param = func_param,
         text = text or "no text",
@@ -21,7 +23,7 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
         checkPressed = function(self, mouse_x, mouse_y, cursor_radius)
             if (mouse_x + cursor_radius >= self.button_x and
                 mouse_x - cursor_radius <= self.button_x + self.width) and
-            (mouse_y + cursor_radius >= self.button_y and
+               (mouse_y + cursor_radius >= self.button_y and
                 mouse_y - cursor_radius <= self.button_y + self.height) then
                 if self.func_param then
                     self.func(self.func_param)
@@ -61,11 +63,12 @@ end
 -- Buttons in the menu phase are created and stored here.
 function Buttons.createMenuButton(enableRunning)
     local MenuButton = {}
-    MenuButton.start_button = Buttons.newButton("Start", enableRunning, nil,
-    'assets/sprites/smallGreenButton.png', 96, 36)
-
-    MenuButton.exit_button = Buttons.newButton("Exit", love.event.quit, nil,
-    'assets/sprites/smallGreenButton.png', 96, 36)
+    MenuButton.start_button = Buttons.newButton(
+        "Start", enableRunning, nil, 'assets/sprites/smallGreenButton.png'
+    )
+    MenuButton.exit_button = Buttons.newButton(
+        "Exit", love.event.quit, nil, 'assets/sprites/smallGreenButton.png'
+    )
 
     return MenuButton
 end
@@ -73,9 +76,9 @@ end
 -- Buttons in the running phase are created and stored here.
 function Buttons.createRunningButton(enableMenu)
     local RunningButton = {}
-    RunningButton.menu_button = Buttons.newButton("Menu", enableMenu, nil,
-    'assets/sprites/smallGreenButton.png', 96, 36)
-
+    RunningButton.menu_button = Buttons.newButton(
+        "Menu", enableMenu, nil, 'assets/sprites/smallGreenButton.png'
+    )
     return RunningButton
 end
 

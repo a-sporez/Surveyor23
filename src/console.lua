@@ -4,7 +4,7 @@ local colors = require('src.lib.colors')
 
 local Console = {}
 
-local terminalWidth, terminalHeight = 680, 320
+local terminalWidth, terminalHeight = 426, 240
 local terminalX = love.graphics.getWidth() - terminalWidth
 local terminalY = love.graphics.getHeight() - terminalHeight
 Console.config = {
@@ -52,7 +52,9 @@ function Console:draw()
 
     -- Draw the console background rectangle within the terminal frame
     love.graphics.setColor(self.config.backColor)
-    love.graphics.rectangle('fill', self.config.posX, self.config.posY, self.config.width, self.config.height)
+    love.graphics.rectangle(
+        'fill', self.config.posX, self.config.posY, self.config.width, self.config.height
+    )
 
     -- Reset color for text
     love.graphics.setColor(self.config.textColor)
@@ -60,7 +62,9 @@ function Console:draw()
     -- Print each line of the command history
     for i, line in ipairs(self.state.cmdHistory) do
         -- Adjust starting x and y positions if needed to better align text inside the console rectangle
-        love.graphics.print(line, self.config.posX + 10, self.config.posY + (i - 1) * self.config.fontSize)
+        love.graphics.print(
+            line, self.config.posX + 4, self.config.posY + (i - 1) * self.config.fontSize
+        )
     end
     love.graphics.print(
         self.state.input, self.config.posX + 10, self.config.posY + self.config.height - self.config.fontSize

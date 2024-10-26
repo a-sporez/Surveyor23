@@ -1,9 +1,14 @@
 # Surveyor23
- Do not attempt without professional supervision!!
- I have no idea what I am doing.
+ Do not attempt without professional supervision.
+ **_I have no idea what I am doing!!_**
 
-*Once again this is a prototype that I am not planning to deploy*
+*This is not a tutorial but it is not a prototype either, I guess I could call it a workshop... or what if I call it a surveyor and imagine that it's actually a spaceship?*
+
 I will try to keep a somewhat coherent journal of the development however code snippets and references will be in the code-journal repository until I have edited, implemented and managed to load them into a fork that I merged here.
+
+The snippets I put here are not the same as what is in the main branch, they are to demonstrate the logic behind methods and also it helps me think when I'm stuck to come back here and explain/remember the snippets at that point in time during the process of adding methods.
+
+**_With that said, I will fork the state of development it is at when I do put snippets in this README and they will be numered like this: "0.01a" as I will reserve 0.1 milestone when it becomes somewhat functional enough for me to enjoy playing it, if it isn't enjoyable I wouldn't want to go further than this milestone and I'll refactor until it is_**
 
 ## index
 
@@ -18,15 +23,40 @@ I will try to keep a somewhat coherent journal of the development however code s
     - Input Handler
     WIP:
     - Entities base methods
+        + Flesh out base entities
+        + Create Surveyor base method
+    - Console
 
  * TODO:
-    - *Entities base methods*
-    - Console
+
     - Animate sprites
         + .
     - Collisions
-    - Entity Characteristics
+
     - Entity Modules
+        + Surveyor
+            * Systems
+            * Life Support
+            * Weapons
+        + Drones
+            * Systems
+            * Weapons
+        + Shuttles/Fighters
+            * Systems
+            * Life Support
+            * Weapons
+    - Resources
+        + Fuel
+            * Solid (single use devices and engine)
+            * Liquid/Ox standard (reusable tank and engine)
+        + Supplies
+            * Life Support
+            * Weapons Ordnance
+            * Tech Supplies
+            * Admin Supplies
+    - Extraction
+    - Transformation
+    - Manufacturing
     - Scene switches
     - Settings menu
 
