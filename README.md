@@ -67,7 +67,6 @@ The pattern I want to follow is to have an initial class that returns a table wi
 - **_stateButtons_** stores buttons in tables that are called depending on game state. 
 
 ```lua
--- initialize state buttons
 local stateButtons = {
     menu_state = {},
     running_state = {}
@@ -78,7 +77,6 @@ local stateButtons = {
 - **_state_** is a table that stores the different states as bools, the reasoning behind this structure is to be able to store variables and functions that act on game states as a whole.
 
 ```lua
--- program table acts as a class with state as it's subclass
 local program = {
     state = {
         menu = true,
@@ -95,18 +93,13 @@ function enableMenu()
     program.state['menu'] = true
     program.state['running'] = false
 end
-
 function isMenu()
     return program.state['menu']
 end
-
--- helper function to switch to running program state
 function enableRunning()
     program.state['menu'] = false
     program.state['running'] = true
 end
-
--- helper function for state checks
 function isRunning()
     return program.state['running']
 end
@@ -129,7 +122,6 @@ end
 function love.mousepressed(x, y, button)
     inputHandler.mousepressed(x, y, button)
 end
-
 function love.keypressed(key)
     inputHandler.keypressed(key)
 end
@@ -160,20 +152,25 @@ end
 
 #### src/buttons.lua
 
-This is the method I would like to get comfortable with going forward, when I feel comfortable with it I will move on to metatables for things like dynamic inventories and modular systems.
+Let's break down this method because it is a neat one that I intend to use a lot.
+First we set a table on top of the file where the Buttons will be stored then we create a constructor function with the parameters that are to be passed when calling the base method.
 
 ```lua
 local love = require('love')
-
 local Buttons = {}
-
 function Buttons.newButton(text, func, func_param, sprite_path, width, height)
--- use graphics.newImage to declare the usage of sprite_path
+```
+
+Here I am storing the image to be the one provided with sprite_path parameter.
+
+```lua
     local buttonSprite = love.graphics.newImage(sprite_path)
 ```
 
+This methods is basically Object Oriented Programming for Dummies... or something like that. It returns a table containing the functions that define the base methods.
+The first array of values are the static parameters.
+
 ```lua
--- return the table that will define the methods for buttons
     return {
         width = width or 20,
         height = height or 20,
@@ -186,8 +183,9 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
         text_y = 0,
 ```
 
+once those are declared I make a function to initiate the buttons function when mouse is pressed on it.
+
 ```lua
--- Function to execute paramereters if mouse is pressed over a button.
         checkPressed = function(self, mouse_x, mouse_y, cursor_radius)
             if (mouse_x + cursor_radius >= self.button_x and
                 mouse_x - cursor_radius <= self.button_x + self.width) and
@@ -201,6 +199,8 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
             end
         end,
 ```
+
+Here I define the method to draw the button and place text on it.
 
 ```lua
         draw = function (self, button_x, button_y, text_x, text_y)
@@ -217,7 +217,6 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
             else
                 self.text_y = self.button_y
             end
-
             -- Draw the button image
             love.graphics.draw(buttonSprite, self.button_x, self.button_y)
             -- Draw the button text
@@ -230,24 +229,25 @@ function Buttons.newButton(text, func, func_param, sprite_path, width, height)
 end
 ```
 
-```lua
+Finally this is the factory function where I "design" the butonns and assign them the parameters to use the methods I just set up.
 
+```lua
 function Buttons.createMenuButton(enableRunning)
     local MenuButton = {}
     MenuButton.start_button = Buttons.newButton("Start", enableRunning, nil, 'assets/sprites/smallGreenButton.png', 96, 36)
 
     return MenuButton
 end
-
 return Buttons
 ```
+
+*NOTE: It's critical to return the table for any of this stuff to work*
 
 src/inputHandler.lua
 
 ```lua
 local inputHandler = {}
 local stateButtons = nil  -- Declare stateButtons as nil initially
-
 local cursor = {
     radius = 2,
     x = 1,
@@ -256,7 +256,6 @@ local cursor = {
 ```
 
 ```lua
--- Function to set stateButtons from main.lua
 function inputHandler.setStateButtons(buttons)
     stateButtons = buttons
 end
@@ -264,12 +263,10 @@ end
 
 ```lua
 function inputHandler.mousepressed(x, y, button, istouch, presses)
-    -- Ensure stateButtons is not nil before using it
-    if stateButtons == nil then
+    if stateButtons == nil then -- Ensure stateButtons is not nil before using it
         print("Error: stateButtons not initialized")
         return
     end
-
     if not isRunning() then
         if button == 1 then
             if isMenu() then
@@ -280,8 +277,19 @@ function inputHandler.mousepressed(x, y, button, istouch, presses)
         end
     end
 end
-
 return inputHandler
 ```
 
 It probably takes a seasoned programmer a few minutes to cook this code up, it took me about two weeks. xD
+
+```lua
+function Buttons.drawRunningButtons(runningButtons, windowCentreX, windowCentreY)
+    runningButtons.menu_button:draw(windowCentreX - 48, windowCentreY + 36, 20, 10)
+end
+function Buttons.drawMenuButtons(menuButtons, windowCentreX, windowCentreY)
+    menuButtons.start_button:draw(windowCentreX - 48, windowCentreY - 18, 20, 10)
+    menuButtons.exit_button:draw(windowCentreX - 48, windowCentreY + 18, 20, 10)
+end
+```
+
+[back to index](#index)

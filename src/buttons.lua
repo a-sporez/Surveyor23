@@ -80,7 +80,6 @@ function Buttons.createRunningButton(enableMenu)
 end
 
 -- Function to draw buttons used in the running interface.
-
 function Buttons.drawRunningButtons(runningButtons, windowCentreX, windowCentreY)
     runningButtons.menu_button:draw(windowCentreX - 48, windowCentreY + 36, 20, 10)
 end
