@@ -60,12 +60,9 @@ function love.load()
     stateButtons.running_state = Buttons.createRunningButton(enableMenu)
     inputHandler.setStateButtons(stateButtons)
     Console:initialize()
+    Entities.createGreenEntity()
+    Entities.createRedEntity()
 end
-
-local entities = { -- luacheck: ignore 211
-    greenEntity = Entities.createGreenEntity(),
-    redEntity = Entities.createRedEntity()
-}
 
 function love.update(dt)
     for _, entity in ipairs(Entities.greenEntities) do

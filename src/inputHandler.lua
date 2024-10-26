@@ -20,11 +20,20 @@ end
 
 -- Define the keypressed functions
 function inputHandler.keypressed(key)
-    if key == 'c' then
-        Console:print("Key 'c' was pressed!")
-    end
-    if key == 'escape' then
-        enableMenu()
+    if isRunning() then
+        if key == 'tab' then
+            Console.state.active = not Console.state.active
+        elseif key == 'escape' then
+            enableMenu()
+        elseif Console.state.active then
+            if key == 'return' then
+                Console:submitInput()
+            elseif key == 'backspace' then
+                Console.state.input = Console.state.input:sub(1, -2)
+            else
+                Console:receiveInput(key)
+            end
+        end
     end
 end
 

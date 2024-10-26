@@ -103,7 +103,6 @@ function Entities.checkSelection(x, y)
             entity:toggleSelected()
         end
     end
-
 end
 
 return Entities
