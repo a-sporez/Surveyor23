@@ -1,12 +1,13 @@
 local love = require('love')
-
+-- luacheck: globals terminalX
+-- luacheck: globals terminalY
 local colors = require('src.lib.colors')
 
 local Console = {}
 
 local terminalWidth, terminalHeight = 426, 240
-local terminalX = love.graphics.getWidth() - terminalWidth
-local terminalY = love.graphics.getHeight() - terminalHeight
+terminalX = love.graphics.getWidth() - terminalWidth
+terminalY = love.graphics.getHeight() - terminalHeight
 Console.config = {
     posX = terminalX + 20,
     posY = terminalY + 32,
@@ -32,7 +33,7 @@ end
 
 function Console:addToHistory(line)
     table.insert(self.state.cmdHistory, line)
-    if #self.state.cmdHistory > (self.config.height / self.config.fontSize) then
+    if #self.state.cmdHistory > (self.config.height / self.config.fontSize - self.config.fontSize) then
         table.remove(self.state.cmdHistory, 1)
     end
 end

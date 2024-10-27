@@ -2,6 +2,7 @@
 local love = require('love')
 
 local colors = require('src.lib.colors')
+local Physics = require('src.lib.physics')
 
 local Entities = {}
 
@@ -74,6 +75,22 @@ function Entities.createRedEntity(count)
         )
         redEntity.name = "redEntity" .. i
         table.insert(Entities.redEntities, redEntity)
+    end
+end
+
+function Entities.movement(dt)
+    for _, entity in ipairs(Entities.greenEntities) do
+        entity:moveToTarget(dt)
+    end
+    for _, entity in ipairs(Entities.redEntities) do
+        entity:moveToTarget(dt)
+    end
+    for _, greenEntity in ipairs(Entities.greenEntities) do
+        for _, redEntity in ipairs(Entities.redEntities) do
+            if Physics.checkContact(greenEntity, redEntity) then
+                Physics.applyContact(greenEntity, redEntity)
+            end
+        end
     end
 end
 

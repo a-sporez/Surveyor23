@@ -10,16 +10,23 @@ Ayu Darkvenom
 -- luacheck: globals enableRunning
 -- luacheck: globals isRunning
 -- luacheck: globals enableMenu
+-- luacheck: globals ui_node1_x
+-- luacheck: globals ui_node1_y
+-- luacheck: globals windowCentreX
+-- luacheck: globals windowCentreY
 local love = require "love"
+
 -- imports
 local Console = require('src.console')
 local Buttons = require('src.buttons')
 local inputHandler = require('src.inputHandler')
 local Entities = require('src.entities')
 
--- stored values
-local windowCentreX = love.graphics.getWidth() / 2
-local windowCentreY = love.graphics.getHeight() / 2
+-- globals
+windowCentreX = love.graphics.getWidth() / 2
+windowCentreY = love.graphics.getHeight() / 2
+ui_node1_x = 1078
+ui_node1_y = 660
 
 -- initialize and store state buttons
 local stateButtons = {
@@ -56,21 +63,14 @@ function isRunning()
 end
 
 function love.load()
-    stateButtons.menu_state = Buttons.createMenuButton(enableRunning)
-    stateButtons.running_state = Buttons.createRunningButton(enableMenu)
-    inputHandler.setStateButtons(stateButtons)
     Console:initialize()
-    Entities.createGreenEntity()
-    Entities.createRedEntity()
+    stateButtons.menu_state = Buttons.createMenuButton(enableRunning, windowCentreX, windowCentreY)
+    stateButtons.running_state = Buttons.createRunningButton(enableMenu, ui_node1_x, ui_node1_y)
+    inputHandler.setStateButtons(stateButtons)
 end
 
 function love.update(dt)
-    for _, entity in ipairs(Entities.greenEntities) do
-        entity:moveToTarget(dt)
-    end
-    for _, entity in ipairs(Entities.redEntities) do
-        entity:moveToTarget(dt)
-    end
+    Entities.movement(dt)
 end
 
 function love.draw()
@@ -79,7 +79,7 @@ function love.draw()
         Buttons.drawMenuButtons(stateButtons.menu_state, windowCentreX, windowCentreY)
     elseif isRunning() then
         Console:draw()
-        Buttons.drawRunningButtons(stateButtons.running_state, windowCentreX, windowCentreY)
+        Buttons.drawRunningButtons(stateButtons.running_state)
         Entities.drawGreenEntities()  -- Draw all green entities
         Entities.drawRedEntities()    -- Draw all red entities
     end

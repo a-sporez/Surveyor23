@@ -1,14 +1,14 @@
 local colors = {
     white = {1, 1, 1},
-    darkGrey = {0.4, 0.4, 0.4},
-    lightGrey = {0.8, 0.8, 0.8},
-    oliveGrey = {0.74, 0.72, 0.62},
-    brown = {118, 112, 94},
     black = {0, 0, 0},
     red = {1, 0, 0},
     green = {0, 1, 0},
     blue = {0, 0, 1},
-    yellow = {1, 1, 0},
+    brown = {0.118, 0.112, 0.094},
+    yellow = {0.218, 0.225, 0.027},
+    darkGrey = {0.045, 0.045, 0.045},
+    lightGrey = {0.073, 0.073, 0.073},
+    oliveGrey = {0.174, 0.172, 0.162}
 }
 
 return colors
