@@ -275,15 +275,21 @@ return Buttons
 
 src/inputHandler.lua
 
+This module will govern the logic of keyboard and mouse input.
+Because the buttons are initialized depending on their game state, I declare the table where they will be stored to return nil.
+Then I create a table to define the area around the mouse that will be the cursor, in this case 1 pixel.
+
 ```lua
 local inputHandler = {}
 local stateButtons = nil  -- Declare stateButtons as nil initially
 local cursor = {
-    radius = 2,
+    radius = 1,
     x = 1,
     y = 1
 }
 ```
+
+This is a helper function to pass the local scope "buttons" to the global scope "stateButtons" since it will essentially be a coroutine in the main file.
 
 ```lua
 function inputHandler.setStateButtons(buttons)
@@ -291,8 +297,10 @@ function inputHandler.setStateButtons(buttons)
 end
 ```
 
+This is the function to register mouse clicks, it is pretty straight forward, do an if loop with the helper function that returns game state, button, etc...
+
 ```lua
-function inputHandler.mousepressed(x, y, button, istouch, presses)
+function inputHandler.mousepressed(x, y, button)
     if stateButtons == nil then -- Ensure stateButtons is not nil before using it
         print("Error: stateButtons not initialized")
         return
@@ -310,7 +318,9 @@ end
 return inputHandler
 ```
 
-It probably takes a seasoned programmer a few minutes to cook this code up, it took me about two weeks. xD
+[back to index](#index)
+
+# Adding Modules
 
 ```lua
 function Buttons.drawRunningButtons(runningButtons, windowCentreX, windowCentreY)
@@ -322,4 +332,3 @@ function Buttons.drawMenuButtons(menuButtons, windowCentreX, windowCentreY)
 end
 ```
 
-[back to index](#index)

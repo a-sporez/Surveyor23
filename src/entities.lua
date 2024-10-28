@@ -4,6 +4,8 @@ local love = require('love')
 local colors = require('src.lib.colors')
 
 local Entities = {}
+Entities.greenEntities = {}
+Entities.redEntities = {}
 
 function Entities.newEntity(x, y, radius, color)
     return {
@@ -52,9 +54,6 @@ function Entities.newEntity(x, y, radius, color)
     }
 end
 
-Entities.greenEntities = {}
-Entities.redEntities = {}
-
 function Entities.createGreenEntity(count)
     local count = count or 5
     for i = 1, count do
@@ -87,17 +86,22 @@ function Entities.movement(dt)
 end
 
 function Entities.checkSelection(x, y)
+    local selected = false
     for _, entity in ipairs(Entities.greenEntities) do
         if entity:checkPressed(x, y) then
             entity:toggleSelected()
+            selected = true
         end
     end
 
     for _, entity in ipairs(Entities.redEntities) do
         if entity:checkPressed(x, y) then
             entity:toggleSelected()
+            selected = true
         end
     end
+
+    return selected  -- Returns true if any entity was selected
 end
 
 -- Function to draw all green entities
@@ -111,6 +115,15 @@ end
 function Entities.drawRedEntities()
     for _, entity in ipairs(Entities.redEntities) do
         entity:draw()
+    end
+end
+
+function Entities:deselectAll()
+    for _, entity in pairs(self.greenEntities) do
+        entity.selected = false
+    end
+    for _, entity in pairs(self.redEntities) do
+        entity.selected = false
     end
 end
 

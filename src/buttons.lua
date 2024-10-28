@@ -48,7 +48,11 @@ function Buttons.newButton(text, func, func_param, sprite_path, x, y)
         end
     }
 end
-
+--[[
+TO ADD NEW BUTTONS
+Add an entry to the button type you want to create and
+multiply the height by the row you want the button to be at in the node
+--]]
 -- Buttons in the menu phase are created and stored here.
 function Buttons.createMenuButton(enableRunning, windowCentreX, windowCentreY)
     local MenuButton = {}

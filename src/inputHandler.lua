@@ -38,7 +38,6 @@ function inputHandler.keypressed(key)
 end
 
 function inputHandler.mousepressed(x, y, button)
-    -- Ensure stateButtons is not nil before using it
     if stateButtons == nil then
         print("Error: stateButtons not initialized")
         return
@@ -52,7 +51,12 @@ function inputHandler.mousepressed(x, y, button)
         end
     elseif isRunning() then
         if button == 1 then
-            Entities.checkSelection(x, y)
+            local clickedEntity = Entities.checkSelection(x, y)
+
+            if not clickedEntity then
+                Entities:deselectAll()  -- Deselect all entities if no entity was clicked
+            end
+
             for index in pairs(stateButtons.running_state) do
                 stateButtons.running_state[index]:checkPressed(x, y, cursor.radius)
             end
