@@ -1,15 +1,20 @@
 -- luacheck: ignore i count
 local love = require('love')
 
+local colors = require('src.lib.colors')
+
 local Entities = {}
+Entities.greenEntities = {}
+Entities.redEntities = {}
 
 function Entities.newEntity(x, y, radius, color)
     return {
         x = x or 100,
         y = y or 100,
         radius = radius or 10,
-        color = color or {1, 1, 1},
+        color = color or colors.white,
         selected = false,
+        target = nil,
 
 -- toggle selection using a not statement
         toggleSelected = function (self)
@@ -22,27 +27,40 @@ function Entities.newEntity(x, y, radius, color)
             return (dx * dx + dy * dy) <= (self.radius * self.radius)
         end,
 
+        moveToTarget = function (self, dt)
+            if self.target then
+                local dx, dy = self.target.x - self.x, self.target.y - self.y
+                local distance = math.sqrt(dx * dx + dy * dy)
+
+                if distance > 1 then
+                    local speed = 100
+                    self.x = self.x + (dx / distance) * speed * dt
+                    self.y = self.y + (dy / distance) * speed * dt
+                else
+                    self.target = nil
+                end
+            end
+        end,
+
         draw = function (self)
             if self.selected then
-                love.graphics.setColor(1, 1, 0)
+                love.graphics.setColor(colors.yellow)
             else
                 love.graphics.setColor(self.color)
             end
             love.graphics.circle('fill', self.x, self.y, self.radius)
-            love.graphics.setColor(1, 1, 1)
+            love.graphics.setColor(colors.white)
         end
     }
 end
-
-Entities.greenEntities = {}
-Entities.redEntities = {}
 
 function Entities.createGreenEntity(count)
     local count = count or 5
     for i = 1, count do
         local greenEntity = Entities.newEntity(
-            800 + (i * 50), 200 + (i * 50), 25, {0, 1, 0}
+            800 + (i * 50), 200 + (i * 50), 25, colors.green
         )
+        greenEntity.name = "greenEntity" .. i
         table.insert(Entities.greenEntities, greenEntity)
     end
 end
@@ -51,10 +69,39 @@ function Entities.createRedEntity(count)
     local count = count or 3
     for i = 1, count do
         local redEntity = Entities.newEntity(
-            200 + (i * 50), 600 + (i * 50), 20, {1, 0, 0}
+            200 + (i * 50), 600 + (i * 50), 20, colors.red
         )
+        redEntity.name = "redEntity" .. i
         table.insert(Entities.redEntities, redEntity)
     end
+end
+
+function Entities.movement(dt)
+    for _, entity in ipairs(Entities.greenEntities) do
+        entity:moveToTarget(dt)
+    end
+    for _, entity in ipairs(Entities.redEntities) do
+        entity:moveToTarget(dt)
+    end
+end
+
+function Entities.checkSelection(x, y)
+    local selected = false
+    for _, entity in ipairs(Entities.greenEntities) do
+        if entity:checkPressed(x, y) then
+            entity:toggleSelected()
+            selected = true
+        end
+    end
+
+    for _, entity in ipairs(Entities.redEntities) do
+        if entity:checkPressed(x, y) then
+            entity:toggleSelected()
+            selected = true
+        end
+    end
+
+    return selected  -- Returns true if any entity was selected
 end
 
 -- Function to draw all green entities
@@ -71,19 +118,13 @@ function Entities.drawRedEntities()
     end
 end
 
-function Entities.checkSelection(x, y)
-    for _, entity in ipairs(Entities.greenEntities) do
-        if entity:checkPressed(x, y) then
-            entity:toggleSelected()
-        end
+function Entities:deselectAll()
+    for _, entity in pairs(self.greenEntities) do
+        entity.selected = false
     end
-
-    for _, entity in ipairs(Entities.redEntities) do
-        if entity:checkPressed(x, y) then
-            entity:toggleSelected()
-        end
+    for _, entity in pairs(self.redEntities) do
+        entity.selected = false
     end
-
 end
 
 return Entities

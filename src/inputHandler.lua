@@ -4,8 +4,8 @@
 -- luacheck: globals isMenu
 local inputHandler = {}
 local stateButtons = nil  -- Declare stateButtons as nil initially
-local Entities = require('src/entities')
-
+local Entities = require('src.entities')
+local Console = require('src.console')
 
 local cursor = {
     radius = 2,
@@ -18,16 +18,26 @@ function inputHandler.setStateButtons(buttons)
     stateButtons = buttons
 end
 
--- Define the new keypressed function
+-- Define the keypressed functions
 function inputHandler.keypressed(key)
-    -- Handle the 'escape' key to quit the game
-    if key == 'escape' then
-        enableMenu()
+    if isRunning() then
+        if key == 'tab' then
+            Console.state.active = not Console.state.active
+        elseif key == 'escape' then
+            enableMenu()
+        elseif Console.state.active then
+            if key == 'return' then
+                Console:submitInput()
+            elseif key == 'backspace' then
+                Console.state.input = Console.state.input:sub(1, -2)
+            else
+                Console:receiveInput(key)
+            end
+        end
     end
 end
 
 function inputHandler.mousepressed(x, y, button)
-    -- Ensure stateButtons is not nil before using it
     if stateButtons == nil then
         print("Error: stateButtons not initialized")
         return
@@ -41,9 +51,25 @@ function inputHandler.mousepressed(x, y, button)
         end
     elseif isRunning() then
         if button == 1 then
-            Entities.checkSelection(x, y)
+            local clickedEntity = Entities.checkSelection(x, y)
+
+            if not clickedEntity then
+                Entities:deselectAll()  -- Deselect all entities if no entity was clicked
+            end
+
             for index in pairs(stateButtons.running_state) do
                 stateButtons.running_state[index]:checkPressed(x, y, cursor.radius)
+            end
+        elseif button == 2 then
+            for _, entity in ipairs(Entities.greenEntities) do
+                if entity.selected then
+                    entity.target = {x = x, y = y}
+                end
+            end
+            for _, entity in ipairs(Entities.redEntities) do
+                if entity.selected then
+                    entity.target = {x = x, y = y}
+                end
             end
         end
     end
