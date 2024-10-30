@@ -4,10 +4,11 @@ local love = require('love')
 local colors = require('src.lib.colors')
 
 local Console = {}
-
+-- Declare the dimensions of the console
 local terminalWidth, terminalHeight = 426, 240
 terminalX = love.graphics.getWidth() - terminalWidth
 terminalY = love.graphics.getHeight() - terminalHeight
+-- Declaring the base attributes of the console
 Console.config = {
     posX = terminalX + 20,
     posY = terminalY + 32,
@@ -41,10 +42,12 @@ function Console:addToHistory(line)
     end
 end
 
+-- Helper function passed to inputHandler to toggle console
 function Console:toggleActive()
     self.state.active = not self.state.active
 end
 
+-- Helper function to delete input on backspace.
 function Console:backspace()
     self.state.input = self.state.input:sub(1, -2)
 end

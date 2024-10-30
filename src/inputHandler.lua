@@ -3,34 +3,45 @@
 -- luacheck: globals isRunning
 -- luacheck: globals isMenu
 local inputHandler = {}
-local stateButtons = nil  -- Declare stateButtons as nil initially
+-- Declare stateButtons as nil initially
+local stateButtons = nil
 local Entities = require('src.entities')
 local Console = require('src.console')
 
+-- Table to store the mouse cursor position.
 local cursor = {
-    radius = 2,
+    radius = 1,
     x = 1,
     y = 1
 }
 
--- Function to set stateButtons from main.lua
+-- Function to initialize stateButtons from main.lua
 function inputHandler.setStateButtons(buttons)
     stateButtons = buttons
 end
 
 -- Define the keypressed functions
 function inputHandler.keypressed(key)
+-- Verifying program state from main.lua
     if isRunning() then
         if key == 'tab' then
+-- Initializing the console
             Console:toggleActive()
+-- Escape key while the game is running exits to menu
         elseif key == 'escape' then
             enableMenu()
+-- Passing the input to process command to console with debug print statement
         elseif Console.state.active and key == 'return' then
-            print("Enter pressed")  -- Debugging print statement
+            print("Enter pressed")
             Console:submitInput()
         elseif Console.state.active then
+-- Passing the backspace input to remove characters to console
             if key == 'backspace' then
                 Console:backspace()
+--[[ Only process printable characters.
+TODO: this is a workaround to avoid registering the key functions "shift, ctrl..."
+I have to find out how to register fn keys without printing.
+--]]
             elseif #key == 1 then
                 Console:receiveInput(key)
             end
@@ -55,7 +66,8 @@ function inputHandler.mousepressed(x, y, button)
             local clickedEntity = Entities.checkSelection(x, y)
 
             if not clickedEntity then
-                Entities:deselectAll()  -- Deselect all entities if no entity was clicked
+-- Deselect all entities if no entity was clicked
+                Entities:deselectAll()
             end
 
             for index in pairs(stateButtons.running_state) do
