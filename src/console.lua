@@ -15,7 +15,7 @@ Console.config = {
     height = terminalHeight - 64,
     fontSize = 22,
     backColor = colors.oliveGrey,
-    textColor = colors.brown
+    textColor = colors.lightGrey
 }
 
 Console.state = {
@@ -33,7 +33,7 @@ end
 
 function Console:addToHistory(line)
     table.insert(self.state.cmdHistory, line)
-    if #self.state.cmdHistory > (self.config.height / self.config.fontSize - self.config.fontSize) then
+    if #self.state.cmdHistory > math.floor(self.config.height / self.config.fontSize) then
         table.remove(self.state.cmdHistory, 1)
     end
 end
@@ -61,8 +61,9 @@ function Console:draw()
     love.graphics.setColor(self.config.textColor)
 
     -- Print each line of the command history
-    for i, line in ipairs(self.state.cmdHistory) do
-        -- Adjust starting x and y positions if needed to better align text inside the console rectangle
+    local maxLines = math.floor(self.config.height / self.config.fontSize) - 1
+    for i = 1, math.min(#self.state.cmdHistory, maxLines) do
+        local line = self.state.cmdHistory[i]
         love.graphics.print(
             line, self.config.posX + 4, self.config.posY + (i - 1) * self.config.fontSize
         )
