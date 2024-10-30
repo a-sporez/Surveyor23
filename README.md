@@ -322,6 +322,8 @@ return inputHandler
 
 # Adding Modules
 
+I start by adding buttons, one to exit the game and the other to return to menu.
+
 ```lua
 function Buttons.drawRunningButtons(runningButtons, windowCentreX, windowCentreY)
     runningButtons.menu_button:draw(windowCentreX - 48, windowCentreY + 36, 20, 10)
