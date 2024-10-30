@@ -22,15 +22,16 @@ end
 function inputHandler.keypressed(key)
     if isRunning() then
         if key == 'tab' then
-            Console.state.active = not Console.state.active
+            Console:toggleActive()
         elseif key == 'escape' then
             enableMenu()
+        elseif Console.state.active and key == 'return' then
+            print("Enter pressed")  -- Debugging print statement
+            Console:submitInput()
         elseif Console.state.active then
-            if key == 'return' then
-                Console:submitInput()
-            elseif key == 'backspace' then
-                Console.state.input = Console.state.input:sub(1, -2)
-            else
+            if key == 'backspace' then
+                Console:backspace()
+            elseif #key == 1 then
                 Console:receiveInput(key)
             end
         end
