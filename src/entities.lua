@@ -8,6 +8,76 @@ local Entities = {}
 Entities.greenEntities = {}
 Entities.redEntities = {}
 
+local function toggleSelected(self)
+    self.selected = not self.selected
+end
+
+local function checkPressed(self, mouse_x, mouse_y)
+
+    -- Transform the vertices of the polygon to the entity's position and angle
+    local transformedVertices = {}
+    for _, vertex in ipairs(self.shape) do
+        local transformedX = self.pos.x + (vertex[1] * math.cos(self.angle) - vertex[2] * math.sin(self.angle))
+        local transformedY = self.pos.y + (vertex[1] * math.sin(self.angle) + vertex[2] * math.cos(self.angle))
+        table.insert(transformedVertices, {transformedX, transformedY})
+    end
+
+    -- Ray-Casting Algorithm
+    local inside = false
+    local numVertices = #transformedVertices
+
+    for i = 1, numVertices do
+        local v1 = transformedVertices[i]
+        local v2 = transformedVertices[i % numVertices + 1]  -- Wrap around to the first vertex
+
+        if ((v1[2] > mouse_y) ~= (v2[2] > mouse_y)) and
+           (mouse_x < (v2[1] - v1[1]) * (mouse_y - v1[2]) / (v2[2] - v1[2]) + v1[1]) then
+            inside = not inside
+        end
+    end
+
+    return inside
+end
+
+local function moveToTarget(self, dt)
+    if self.target then
+        -- Check if angle is not nil
+        if self.angle == nil then
+            print("Error: self.angle is nil!")
+            self.angle = 0  -- Assign a default value if necessary
+        end
+
+        -- Calculate the distance between self and target
+        local direction = (self.target - self.pos):normalized()
+        local distance = (self.target - self.pos):len()
+        local targetAngle = direction:angleTo(vector(math.cos(self.angle), math.sin(self.angle)))
+
+        -- Rotating smoothly towards the target
+        if math.abs(targetAngle) < self.turnSpeed * dt then
+            self.angle = self.angle + targetAngle
+        else
+            self.angle = self.angle + (targetAngle > 0 and 1 or -1) * self.turnSpeed * dt
+        end
+
+        -- Adjusting speed based on distance to target
+        if distance > 1 then
+            self.velocity = math.min(self.velocity + self.fwdThrust * dt, self.maxVelocity)
+        else
+            self.velocity = math.max(self.velocity - self.rwdThrust * dt, 0)
+        end
+
+        -- Moving the entity towards the forward facing direction
+        local moveDir = vector(math.cos(self.angle), math.sin(self.angle))
+        self.pos = self.pos + moveDir * self.velocity * dt
+
+        -- Stopping if the destination has been reached
+        if distance < 1 then
+            self.target = nil
+            self.velocity = 0
+        end
+    end
+end
+
 function Entities.newEntity(x, y, vertices, color)
     return {
         pos = vector(x or 100, y or 100),
@@ -27,75 +97,9 @@ function Entities.newEntity(x, y, vertices, color)
             {-5, 5}
         },
 
-        toggleSelected = function(self)
-            self.selected = not self.selected
-        end,
-
-        checkPressed = function(self, mouse_x, mouse_y)
-
-            -- Transform the vertices of the polygon to the entity's position and angle
-            local transformedVertices = {}
-            for _, vertex in ipairs(self.shape) do
-                local transformedX = self.pos.x + (vertex[1] * math.cos(self.angle) - vertex[2] * math.sin(self.angle))
-                local transformedY = self.pos.y + (vertex[1] * math.sin(self.angle) + vertex[2] * math.cos(self.angle))
-                table.insert(transformedVertices, {transformedX, transformedY})
-            end
-
-            -- Ray-Casting Algorithm
-            local inside = false
-            local numVertices = #transformedVertices
-
-            for i = 1, numVertices do
-                local v1 = transformedVertices[i]
-                local v2 = transformedVertices[i % numVertices + 1]  -- Wrap around to the first vertex
-
-                if ((v1[2] > mouse_y) ~= (v2[2] > mouse_y)) and
-                   (mouse_x < (v2[1] - v1[1]) * (mouse_y - v1[2]) / (v2[2] - v1[2]) + v1[1]) then
-                    inside = not inside
-                end
-            end
-
-            return inside
-        end,
-
-        moveToTarget = function(self, dt)
-            if self.target then
-                -- Check if angle is not nil
-                if self.angle == nil then
-                    print("Error: self.angle is nil!")
-                    self.angle = 0  -- Assign a default value if necessary
-                end
-
-                -- Calculate the distance between self and target
-                local direction = (self.target - self.pos):normalized()
-                local distance = (self.target - self.pos):len()
-                local targetAngle = direction:angleTo(vector(math.cos(self.angle), math.sin(self.angle)))
-
-                -- Rotating smoothly towards the target
-                if math.abs(targetAngle) < self.turnSpeed * dt then
-                    self.angle = self.angle + targetAngle
-                else
-                    self.angle = self.angle + (targetAngle > 0 and 1 or -1) * self.turnSpeed * dt
-                end
-
-                -- Adjusting speed based on distance to target
-                if distance > 1 then
-                    self.velocity = math.min(self.velocity + self.fwdThrust * dt, self.maxVelocity)
-                else
-                    self.velocity = math.max(self.velocity - self.rwdThrust * dt, 0)
-                end
-
-                -- Moving the entity towards the forward facing direction
-                local moveDir = vector(math.cos(self.angle), math.sin(self.angle))
-                self.pos = self.pos + moveDir * self.velocity * dt
-
-                -- Stopping if the destination has been reached
-                if distance < 1 then
-                    self.target = nil
-                    self.velocity = 0
-                end
-            end
-        end,
+        toggleSelected = toggleSelected,
+        checkPressed = checkPressed,
+        moveToTarget = moveToTarget,
 
         draw = function(self)
 -- Set color based on selection state

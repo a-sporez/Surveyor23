@@ -49,12 +49,13 @@ I have to find out how to register fn keys without printing.
     end
 end
 
+-- Function to handle mouse clicks
 function inputHandler.mousepressed(x, y, button)
     if stateButtons == nil then
         print("Error: stateButtons not initialized")
         return
     end
-
+-- Defining where to pass mouse clicks depending on program state
     if isMenu() then
         if button == 1 then
             for index in pairs(stateButtons.menu_state) do
