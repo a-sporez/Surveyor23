@@ -8,13 +8,18 @@ local Entities = {}
 Entities.greenEntities = {}
 Entities.redEntities = {}
 
+-- local function to toggle entity selection with a boolean
 local function toggleSelected(self)
     self.selected = not self.selected
 end
 
+-- function that defines events triggered by clicking on the entity.
 local function checkPressed(self, mouse_x, mouse_y)
-
-    -- Transform the vertices of the polygon to the entity's position and angle
+--[[
+Here we need to transform vertices so that they rotate and remained aligned with the forward direction.
+In order to detect if the mouse cursor in on an entity, we use a raycasting algorithm. What it does essentially
+is it casts a line towards the edges of the entity to determine if it intersects with all of the edges.
+--]]
     local transformedVertices = {}
     for _, vertex in ipairs(self.shape) do
         local transformedX = self.pos.x + (vertex[1] * math.cos(self.angle) - vertex[2] * math.sin(self.angle))
@@ -41,36 +46,36 @@ end
 
 local function moveToTarget(self, dt)
     if self.target then
-        -- Check if angle is not nil
+-- Check if angle is not nil
         if self.angle == nil then
             print("Error: self.angle is nil!")
             self.angle = 0  -- Assign a default value if necessary
         end
 
-        -- Calculate the distance between self and target
+-- Calculate the distance between self and target
         local direction = (self.target - self.pos):normalized()
         local distance = (self.target - self.pos):len()
         local targetAngle = direction:angleTo(vector(math.cos(self.angle), math.sin(self.angle)))
 
-        -- Rotating smoothly towards the target
+-- Rotating smoothly towards the target
         if math.abs(targetAngle) < self.turnSpeed * dt then
             self.angle = self.angle + targetAngle
         else
             self.angle = self.angle + (targetAngle > 0 and 1 or -1) * self.turnSpeed * dt
         end
 
-        -- Adjusting speed based on distance to target
+-- Adjusting speed based on distance to target
         if distance > 1 then
             self.velocity = math.min(self.velocity + self.fwdThrust * dt, self.maxVelocity)
         else
             self.velocity = math.max(self.velocity - self.rwdThrust * dt, 0)
         end
 
-        -- Moving the entity towards the forward facing direction
+-- Moving the entity towards the forward facing direction
         local moveDir = vector(math.cos(self.angle), math.sin(self.angle))
         self.pos = self.pos + moveDir * self.velocity * dt
 
-        -- Stopping if the destination has been reached
+-- Stopping if the destination has been reached
         if distance < 1 then
             self.target = nil
             self.velocity = 0
@@ -78,6 +83,7 @@ local function moveToTarget(self, dt)
     end
 end
 
+-- Constructor function with base attributes and the base methods above.
 function Entities.newEntity(x, y, vertices, color)
     return {
         pos = vector(x or 100, y or 100),
@@ -96,7 +102,7 @@ function Entities.newEntity(x, y, vertices, color)
             {5, 5},
             {-5, 5}
         },
-
+-- Calling the local scope functions that define the base methods.
         toggleSelected = toggleSelected,
         checkPressed = checkPressed,
         moveToTarget = moveToTarget,
@@ -134,8 +140,14 @@ function Entities.createGreenEntity(count)
     local count = count or 5
     for i = 1, count do
         local greenEntity = Entities.newEntity(
-            800 + (i * 50), 200 + (i * 50),  -- Position
-            {{0, 5}, {5, -5}, {-5, -5}},  -- Define the shape here
+            -- Position
+            800 + (i * 50),
+            200 + (i * 50),
+            -- Shape
+            {{4, 4},
+            {4, -4},
+            {-6, -4},
+            {-4, 6}},
             colors.green
         )
         greenEntity.name = "greenEntity" .. i
@@ -147,8 +159,13 @@ function Entities.createRedEntity(count)
     local count = count or 3
     for i = 1, count do
         local redEntity = Entities.newEntity(
-            800 + (i * 50), 200 + (i * 50),  -- Position
-            {{0, 5}, {5, -5}, {-5, -5}},  -- Define the shape here
+            -- Position
+            800 + (i * 50),
+            200 + (i * 50),
+            -- Define the shape here
+            {{0, 5},
+            {5, -5},
+            {-5, -5}},
             colors.red
         )
         redEntity.name = "redEntity" .. i
@@ -165,6 +182,7 @@ function Entities.movement(dt)
     end
 end
 
+-- This function is to select entities when checkPressed returns true.
 function Entities.checkSelection(x, y)
     local selected = false
     for _, entity in ipairs(Entities.greenEntities) do
@@ -173,15 +191,14 @@ function Entities.checkSelection(x, y)
             selected = true
         end
     end
-
     for _, entity in ipairs(Entities.redEntities) do
         if entity:checkPressed(x, y) then
             entity:toggleSelected()
             selected = true
         end
     end
-
-    return selected  -- Returns true if any entity was selected
+-- Returns true if any entity was selected
+    return selected
 end
 
 -- Function to draw all green entities
@@ -198,6 +215,7 @@ function Entities.drawRedEntities()
     end
 end
 
+-- function to deselect entities whenever checkPressed returns false (clicking in empty space)
 function Entities:deselectAll()
     for _, entity in pairs(self.greenEntities) do
         entity.selected = false
