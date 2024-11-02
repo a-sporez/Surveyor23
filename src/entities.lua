@@ -136,6 +136,10 @@ function Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)
     end
 
     entity.draw = function(self)
+        local print_x, print_y = math.floor(self.pos.x), math.floor(self.pos.y)
+        love.graphics.print(self.name.."posX:"..print_x.." posY:"..print_y)
+        local print_angle = math.ceil(self.angle)
+        love.graphics.print("Entity Angle: "..print_angle, 0, 22)
         if self.selected then
             love.graphics.setColor(colors.yellow)
         else
@@ -169,7 +173,7 @@ function Entities.createGreenEntity(count)
             800 + (i * 50),
             200 + (i * 50),
             'polygon', -- shapeType
-            nil, -- userData
+            "greenEntity"..i, -- userData
             nil, -- radius
             {{20, 20},
             {20, -20},
@@ -190,7 +194,7 @@ function Entities.createRedEntity(count)
             800 + (i * 50),
             200 + (i * 50),
             'polygon', -- shapeType
-            nil, -- userData
+            "redEntity"..i, -- userData
             nil, -- radius
             {{20, 20},
             {20, -20},

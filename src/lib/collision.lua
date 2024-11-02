@@ -2,20 +2,28 @@ local love = require('love')
 
 local collision = {}
 
-function collision:init(gravityX, gravityY)
--- Initialize physics module
-    self.worldMesh = love.physics.newWorld(gravityX or 0, gravityY or 0)
-    self.worldMesh:setCallbacks(self.beginContact, self.endContact)
-end
+local ui_slot_w, ui_slot_h = 220, 22
+local ui_slot1_x = 0
+local ui_slot1_y = love.graphics.getHeight() - ui_slot_h
 
-function collision.beginContact(a, b, coll)
+function collision:beginContact(a, b, coll)
     local aData = a:getUserData() or "unknown"
     local bData = b:getUserData() or "unknown"
-    print("Contact begins between"..aData.." and "..bData)
+    print("begin contact <"..aData.."> and <"..bData..">")
 end
 
-function collision.endContact(a, b, coll)
-    print("Contact ends between"..a:getUserData().." and "..b:getUserData())
+function collision:endContact(a, b, coll)
+    print("end contact <"..(
+        a:getUserData() or "unknown").."> and <"..(b:getUserData() or "unknown")
+    ..">")
+end
+
+function collision:init(gravityX, gravityY)
+    self.worldMesh = love.physics.newWorld(gravityX or 0, gravityY or 0)
+    self.worldMesh:setCallbacks(
+        function(a, b, coll) self:beginContact(a, b, coll) end,
+        function(a, b, coll) self:endContact(a, b, coll) end
+    )
 end
 
 -- axes and vertices are passed to body and shape, that makes up fiture, that makes up userData
@@ -26,7 +34,7 @@ function collision:addEntity(shapeType, data)
         if not data.vertices or #data.vertices < 6 then
             error("Expected a minimum of 3 vertices for polygon, got " .. (data.vertices and #data.vertices / 2 or 0))
         end
-        -- Print each vertex to check the actual values
+-- Print each vertex to check the actual values
         print("Creating polygon with vertices:")
         for i = 1, #data.vertices, 2 do
             print("Vertex " .. (i / 2 + 0.5) .. ": (" .. data.vertices[i] .. ", " .. data.vertices[i + 1] .. ")")
@@ -36,7 +44,9 @@ function collision:addEntity(shapeType, data)
         shape = love.physics.newCircleShape(data.radius)
     end
     local fixture = love.physics.newFixture(body, shape)
+    print('setting data for fixture:', data.userData)
     fixture:setUserData(data.userData)
+    print("bodyPosX<"..body:getX()..">Y<"..body:getY()..">")
     return body
 end
 
