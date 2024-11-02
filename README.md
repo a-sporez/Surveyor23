@@ -18,16 +18,131 @@ The snippets I put here are not the same as what is in the main branch, they are
 
 #### Modules
 
-    - Game States
-    - Buttons
-    - Input Handler
-    WIP:
-    - Entities base methods
-        + Flesh out base entities
-        + Create Surveyor base method
-    - Console
+---
 
- * TODO:
+### Functions
+
+**1. main.lua**
+- `enableMenu()`
+- `isMenu()`
+- `enableRunning()`
+- `isRunning()`
+- `love.load()`
+- `love.update(dt)`
+- `love.draw()`
+- `love.mousepressed(x, y, button)`
+- `love.keypressed(key)`
+
+**2. src.console.lua**
+- `Console:initialize()`
+- `Console:addToHistory(line)`
+- `Console:toggleActive()`
+- `Console:backspace()`
+- `Console:receiveInput(key)`
+- `Console:processCommand(command)`
+- `Console:submitInput()`
+- `Console:processSingleCommand(command)`
+- `Console:addAlias(alias, command)`
+- `Console:listAliases()`
+- `Console:draw()`
+
+**3. src.buttons.lua**
+- `Buttons.newButton(text, func, func_param, sprite_path, x, y)`
+- `Buttons.createMenuButton(enableRunning, windowCentreX, windowCentreY)`
+- `Buttons.createRunningButton(enableMenu, ui_node1_x, ui_node1_y)`
+- `Buttons.drawRunningButtons(runningButtons)`
+- `Buttons.drawMenuButtons(menuButtons, windowCentreX, windowCentreY)`
+
+**4. src.inputHandler.lua**
+- `inputHandler.setStateButtons(buttons)`
+- `inputHandler.keypressed(key)`
+- `inputHandler.mousepressed(x, y, button)`
+
+**5. src.entities.lua**
+- `Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)`
+- `Entities.createGreenEntity(count)`
+- `Entities.createRedEntity(count)`
+- `Entities.movement(dt)`
+- `Entities.checkSelection(x, y)`
+- `Entities.drawGreenEntities()`
+- `Entities.drawRedEntities()`
+- `Entities.deselectAll()`
+
+**6. src.lib.collision.lua**
+- `collision:init(gravityX, gravityY)`
+- `collision.beginContact(a, b, coll)`
+- `collision.endContact(a, b, coll)`
+- `collision:addEntity(shapeType, data)`
+- `collision:update(dt)`
+- `collision:draw()`
+
+**7. src.lib.colors.lua**
+- `white = {1, 1, 1}`
+- `black = {0, 0, 0}`
+- `red = {1, 0, 0}`
+- `green = {0, 1, 0}`
+- `blue = {0, 0, 1}`
+- `brown = {0.118, 0.112, 0.094}`
+- `yellow = {0.218, 0.225, 0.027}`
+- `darkGrey = {0.045, 0.045, 0.045}`
+- `lightGrey = {0.073, 0.073, 0.073}`
+- `oliveGrey = {0.174, 0.172, 0.162}`
+
+# External Libraries
+
+## **8. lib.vector.lua**
+
+Sure! Here’s a list of the functions defined in your vector module, organized by their category:
+
+### Vector Creation
+- **`new(x, y)`**: Creates a new vector with coordinates (x, y).
+- **`fromPolar(angle, radius)`**: Generates a vector from polar coordinates (angle and radius).
+- **`randomDirection(len_min, len_max)`**: Returns a vector with a random direction and length within the specified range.
+
+### Vector Properties
+- **`isvector(v)`**: Checks if the provided object `v` is a valid vector.
+- **`zero`**: A constant representing the zero vector (0, 0).
+
+### Vector Operations
+- **`vector:clone()`**: Returns a copy of the vector.
+- **`vector:unpack()`**: Returns the x and y coordinates of the vector.
+- **`vector:__tostring()`**: Returns a string representation of the vector.
+- **`vector.__unm(a)`**: Unary minus operator to negate the vector.
+- **`vector.__add(a, b)`**: Addition operator for vectors.
+- **`vector.__sub(a, b)`**: Subtraction operator for vectors.
+- **`vector.__mul(a, b)`**: Multiplication operator, supports both vector and scalar multiplication.
+- **`vector.__div(a, b)`**: Division operator for vectors by a scalar.
+- **`vector.__eq(a, b)`**: Equality operator to compare two vectors.
+- **`vector.__lt(a, b)`**: Less than operator for vector comparisons.
+- **`vector.__le(a, b)`**: Less than or equal operator for vector comparisons.
+
+### Geometric Operations
+- **`vector:toPolar()`**: Converts the vector to polar coordinates (angle and radius).
+- **`vector:len()`**: Returns the length (magnitude) of the vector.
+- **`vector:len2()`**: Returns the squared length of the vector.
+- **`vector.dist(a, b)`**: Calculates the distance between two vectors.
+- **`vector.dist2(a, b)`**: Calculates the squared distance between two vectors.
+- **`vector:normalizeInplace()`**: Normalizes the vector to a unit vector (modifies the original).
+- **`vector:normalized()`**: Returns a new normalized vector without modifying the original.
+- **`vector:rotateInplace(phi)`**: Rotates the vector in place by an angle `phi`.
+- **`vector:rotated(phi)`**: Returns a new vector rotated by an angle `phi`.
+- **`vector:perpendicular()`**: Returns a vector perpendicular to the original vector.
+- **`vector:projectOn(v)`**: Projects the vector onto another vector `v`.
+- **`vector:mirrorOn(v)`**: Mirrors the vector across another vector `v`.
+- **`vector:cross(v)`**: Calculates the cross product of the vector with another vector `v`.
+
+### Trimming and Angles
+- **`vector:trimInplace(maxLen)`**: Trims the vector to a maximum length (modifies the original).
+- **`vector:trimmed(maxLen)`**: Returns a new trimmed vector.
+- **`vector:angleTo(other)`**: Calculates the angle between the vector and another vector `other`.
+
+### Module Export
+- Return a table of functions that can be called with `vector(...)` due to the `__call` metamethod.
+
+---
+
+
+## * TODO:
 
     - Animate sprites
         + .
