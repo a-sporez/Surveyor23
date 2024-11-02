@@ -1,19 +1,13 @@
 --[[
-Comments are on top of body.
-Manual luacheck on top of file.
- VS Code color schemes:
-Alu Dark - Pycharm High Contrast
-Ayu Darkvenom
+luacheck: globals isMenu
+luacheck: globals enableRunning
+luacheck: globals isRunning
+luacheck: globals enableMenu
+luacheck: globals ui_node1_x
+luacheck: globals ui_node1_y
+luacheck: globals windowCentreX
+luacheck: globals windowCentreY
 --]]
--- luacheck: ignore dt
--- luacheck: globals isMenu
--- luacheck: globals enableRunning
--- luacheck: globals isRunning
--- luacheck: globals enableMenu
--- luacheck: globals ui_node1_x
--- luacheck: globals ui_node1_y
--- luacheck: globals windowCentreX
--- luacheck: globals windowCentreY
 local love = require "love"
 
 -- imports
@@ -21,6 +15,7 @@ local Console = require('src.console')
 local Buttons = require('src.buttons')
 local inputHandler = require('src.inputHandler')
 local Entities = require('src.entities')
+local Collision = require('src.lib.collision')
 
 -- globals
 windowCentreX = love.graphics.getWidth() / 2
@@ -63,6 +58,7 @@ function isRunning()
 end
 
 function love.load()
+    Collision:init(0, 0)
     Console:initialize()
     stateButtons.menu_state = Buttons.createMenuButton(enableRunning, windowCentreX, windowCentreY)
     stateButtons.running_state = Buttons.createRunningButton(enableMenu, ui_node1_x, ui_node1_y)
@@ -70,6 +66,7 @@ function love.load()
 end
 
 function love.update(dt)
+    Collision:update(dt)
     Entities.movement(dt)
 end
 
@@ -78,6 +75,7 @@ function love.draw()
     if isMenu() then
         Buttons.drawMenuButtons(stateButtons.menu_state, windowCentreX, windowCentreY)
     elseif isRunning() then
+        Collision:draw()
         Console:draw()
         Buttons.drawRunningButtons(stateButtons.running_state)
         Entities.drawGreenEntities()  -- Draw all green entities
