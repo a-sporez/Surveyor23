@@ -1,7 +1,8 @@
--- luacheck: ignore i count
+-- luacheck: ignore count
 local love = require('love')
 
 local colors = require('src.lib.colors')
+local collision = require('src.lib.collision')
 local vector = require('lib.vector')
 
 local Entities = {}
@@ -33,7 +34,8 @@ is it casts a line towards the edges of the entity to determine if it intersects
 
     for i = 1, numVertices do
         local v1 = transformedVertices[i]
-        local v2 = transformedVertices[i % numVertices + 1]  -- Wrap around to the first vertex
+        -- Wrap around to the first vertex
+        local v2 = transformedVertices[i % numVertices + 1]
 
         if ((v1[2] > mouse_y) ~= (v2[2] > mouse_y)) and
            (mouse_x < (v2[1] - v1[1]) * (mouse_y - v1[2]) / (v2[2] - v1[2]) + v1[1]) then
@@ -66,14 +68,17 @@ local function moveToTarget(self, dt)
 
 -- Adjusting speed based on distance to target
         if distance > 1 then
-            self.velocity = math.min(self.velocity + self.fwdThrust * dt, self.maxVelocity)
+            self.velocity = math.min(self.velocity + self.acceleration * dt, self.maxVelocity)
         else
-            self.velocity = math.max(self.velocity - self.rwdThrust * dt, 0)
+            self.velocity = math.max(self.velocity - self.deceleration * dt, 0)
         end
 
 -- Moving the entity towards the forward facing direction
         local moveDir = vector(math.cos(self.angle), math.sin(self.angle))
         self.pos = self.pos + moveDir * self.velocity * dt
+
+        self.body:setPosition(self.pos.x, self.pos.y)
+        self.body:setAngle(self.angle)
 
 -- Stopping if the destination has been reached
         if distance < 1 then
@@ -84,57 +89,77 @@ local function moveToTarget(self, dt)
 end
 
 -- Constructor function with base attributes and the base methods above.
-function Entities.newEntity(x, y, vertices, color)
-    return {
+function Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)
+    local entity = {
         pos = vector(x or 100, y or 100),
         target = nil,
         color = color or colors.white,
         selected = false,
         velocity = 0,
-        fwdThrust = 50,
-        rwdThrust = 25,
+        acceleration = 50,
+        deceleration = 25,
         maxVelocity = 100,
         turnSpeed = math.rad(90),
         angle = 0,
-        targetAngle = 0,
-        shape = vertices or {
-            {0, -5},
-            {5, 5},
-            {-5, 5}
-        },
--- Calling the local scope functions that define the base methods.
+        radius = radius,
+        shape = vertices,
+        shapeType = shapeType,
+        userData = userData,
         toggleSelected = toggleSelected,
         checkPressed = checkPressed,
         moveToTarget = moveToTarget,
-
-        draw = function(self)
--- Set color based on selection state
-            if self.selected then
-                love.graphics.setColor(colors.yellow)
-            else
-                love.graphics.setColor(self.color)
-            end
-
--- Transforming and drawing the polygon
-            love.graphics.push()
-            love.graphics.translate(self.pos.x, self.pos.y)
-            love.graphics.rotate(self.angle)
-
--- Drawing the polygon using vertices
-            local transformedVertices = {}
-            for _, vertex in ipairs(self.shape) do
-                table.insert(transformedVertices, vertex[1])
-                table.insert(transformedVertices, vertex[2])
-            end
-
-            love.graphics.polygon("fill", transformedVertices)
-            love.graphics.pop()  -- Reset transformations
-
--- Resetting color after drawing
-            love.graphics.setColor(colors.white)
-        end
     }
+
+    -- Prepare data table for the collision
+    local data = {
+        x = entity.pos.x,
+        y = entity.pos.y,
+        userData = entity.userData,
+        vertices = {}  -- Start with an empty table
+    }
+
+    -- Flatten the vertices to be a single-level table
+    for _, vertex in ipairs(entity.shape) do
+        table.insert(data.vertices, vertex[1])
+        table.insert(data.vertices, vertex[2])
+    end
+
+    if shapeType == 'circle' then
+        entity.body = collision:addEntity('circle', {
+            radius = radius,
+            x = entity.pos.x,
+            y = entity.pos.y,
+            userData = userData
+        })
+    elseif shapeType == 'polygon' then
+        entity.body = collision:addEntity('polygon', data)
+    end
+
+    entity.draw = function(self)
+        if self.selected then
+            love.graphics.setColor(colors.yellow)
+        else
+            love.graphics.setColor(self.color)
+        end
+
+        love.graphics.push()
+        love.graphics.translate(self.pos.x, self.pos.y)
+        love.graphics.rotate(self.angle)
+
+        local transformedVertices = {}
+        for _, vertex in ipairs(self.shape) do
+            table.insert(transformedVertices, vertex[1])
+            table.insert(transformedVertices, vertex[2])
+        end
+
+        love.graphics.polygon("fill", transformedVertices)
+        love.graphics.pop()
+        love.graphics.setColor(colors.white)
+    end
+
+    return entity
 end
+
 
 function Entities.createGreenEntity(count)
     local count = count or 5
@@ -143,11 +168,13 @@ function Entities.createGreenEntity(count)
             -- Position
             800 + (i * 50),
             200 + (i * 50),
-            -- Shape
-            {{4, 4},
-            {4, -4},
-            {-6, -4},
-            {-4, 6}},
+            'polygon', -- shapeType
+            nil, -- userData
+            nil, -- radius
+            {{20, 20},
+            {20, -20},
+            {-20, -30},
+            {-20, 30}},
             colors.green
         )
         greenEntity.name = "greenEntity" .. i
@@ -162,10 +189,13 @@ function Entities.createRedEntity(count)
             -- Position
             800 + (i * 50),
             200 + (i * 50),
-            -- Define the shape here
-            {{0, 5},
-            {5, -5},
-            {-5, -5}},
+            'polygon', -- shapeType
+            nil, -- userData
+            nil, -- radius
+            {{20, 20},
+            {20, -20},
+            {-20, -30},
+            {-20, 30}},
             colors.red
         )
         redEntity.name = "redEntity" .. i
