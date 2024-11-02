@@ -90,6 +90,10 @@ The snippets I put here are not the same as what is in the main branch, they are
 
 # External Libraries
 
+Matthias Richter
+
+https://github.com/vrld
+
 ## **8. lib.vector.lua**
 
 Sure! Here’s a list of the functions defined in your vector module, organized by their category:
