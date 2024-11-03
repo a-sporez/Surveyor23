@@ -1,10 +1,36 @@
 local love = require('love')
-
+--[[
+--]]
 local collision = {}
 
 local ui_slot_w, ui_slot_h = 220, 22
 local ui_slot1_x = 0
 local ui_slot1_y = love.graphics.getHeight() - ui_slot_h
+
+-- Utility function to print tables recursively, comment out to turn off
+--
+local function deepPrint(value, indent)
+    indent = indent or ""
+    if type(value) == "table" then
+        for k, v in pairs(value) do
+            if type(v) == "table" then
+                print(indent .. k .. ":")
+                deepPrint(v, indent .. "  ")
+            else
+                print(indent .. k .. ": " .. tostring(v))
+            end
+        end
+    elseif type(value) == "userdata" then
+        if value.getUserData then
+            print(indent .. "UserData (Entity): " .. tostring(value:getUserData()))
+        else
+            print(indent .. "UserData: " .. tostring(value))
+        end
+    else
+        print(indent .. tostring(value))
+    end
+end
+--
 
 function collision:beginContact(a, b, coll)
     local aData = a:getUserData() or "unknown"
@@ -13,7 +39,14 @@ function collision:beginContact(a, b, coll)
     local x1, y1, x2, y2 = coll:getPositions()
     print("Collision detected between:", aData, "and", bData)
     print("Collision point(s):", x1, y1, x2 or "", y2 or "")
+
+    -- Inspect each object
+    print("Inspecting data for 'a':")
+    deepPrint(a)
+    print("Inspecting data for 'b':")
+    deepPrint(b)
 end
+
 
 function collision:endContact(a, b, coll)
     print("end contact <"..(
@@ -56,7 +89,8 @@ end
 
 
 function collision:update(dt)
-    self.worldMesh:update(dt)
+    self.worldMesh:update(dt * 0.001)
+--    print(self.worldMesh:getContacts())
 end
 
 function collision:draw()

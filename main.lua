@@ -68,6 +68,7 @@ end
 function love.update(dt)
     Collision:update(dt)
     Entities.movement(dt)
+    Entities.update(dt)
 end
 
 function love.draw()
