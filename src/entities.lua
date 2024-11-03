@@ -42,7 +42,8 @@ is it casts a line towards the edges of the entity to determine if it intersects
             inside = not inside
         end
     end
-
+    print("Mouse Position:", mouse_x, mouse_y)
+    print("Entity's Position:", self.pos.x, self.pos.y)
     return inside
 end
 
@@ -108,6 +109,7 @@ function Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)
         toggleSelected = toggleSelected,
         checkPressed = checkPressed,
         moveToTarget = moveToTarget,
+        draw = Entities.draw
     }
 
     -- Prepare data table for the collision
@@ -134,30 +136,33 @@ function Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)
     elseif shapeType == 'polygon' then
         entity.body = collision:addEntity('polygon', data)
     end
+    return entity
+end
 
-    entity.draw = function(self)
-        if self.selected then
-            love.graphics.setColor(colors.yellow)
-        else
-            love.graphics.setColor(self.color)
-        end
-
-        love.graphics.push()
-        love.graphics.translate(self.pos.x, self.pos.y)
-        love.graphics.rotate(self.angle)
-
-        local transformedVertices = {}
-        for _, vertex in ipairs(self.shape) do
-            table.insert(transformedVertices, vertex[1])
-            table.insert(transformedVertices, vertex[2])
-        end
-
-        love.graphics.polygon("fill", transformedVertices)
-        love.graphics.pop()
-        love.graphics.setColor(colors.white)
+function Entities.draw(self)
+    local print_x, print_y = math.floor(self.pos.x), math.floor(self.pos.y)
+    love.graphics.print(self.name.."posX:"..print_x.." posY:"..print_y)
+    local print_angle = math.ceil(self.angle)
+    love.graphics.print("Entity Angle: "..print_angle, 0, 22)
+    if self.selected then
+        love.graphics.setColor(colors.yellow)
+    else
+        love.graphics.setColor(self.color)
     end
 
-    return entity
+    love.graphics.push()
+    love.graphics.translate(self.pos.x, self.pos.y)
+    love.graphics.rotate(self.angle)
+
+    local transformedVertices = {}
+    for _, vertex in ipairs(self.shape) do
+        table.insert(transformedVertices, vertex[1])
+        table.insert(transformedVertices, vertex[2])
+    end
+
+    love.graphics.polygon("fill", transformedVertices)
+    love.graphics.pop()
+    love.graphics.setColor(colors.white)
 end
 
 
@@ -169,7 +174,7 @@ function Entities.createGreenEntity(count)
             800 + (i * 50),
             200 + (i * 50),
             'polygon', -- shapeType
-            nil, -- userData
+            "greenEntity"..i, -- userData
             nil, -- radius
             {{20, 20},
             {20, -20},
@@ -190,7 +195,7 @@ function Entities.createRedEntity(count)
             800 + (i * 50),
             200 + (i * 50),
             'polygon', -- shapeType
-            nil, -- userData
+            "redEntity"..i, -- userData
             nil, -- radius
             {{20, 20},
             {20, -20},
@@ -209,6 +214,19 @@ function Entities.movement(dt)
     end
     for _, entity in ipairs(Entities.redEntities) do
         entity:moveToTarget(dt)
+    end
+end
+
+function Entities.update(dt)
+    for _, entity in ipairs(Entities.greenEntities) do
+        entity:moveToTarget(dt)
+        entity.body:setPosition(entity.pos.x, entity.pos.y)
+        entity.body:setAngle(entity.angle)
+    end
+    for _, entity in ipairs(Entities.redEntities) do
+        entity:moveToTarget(dt)
+        entity.body:setPosition(entity.pos.x, entity.pos.y)
+        entity.body:setAngle(entity.angle)
     end
 end
 
