@@ -42,7 +42,8 @@ is it casts a line towards the edges of the entity to determine if it intersects
             inside = not inside
         end
     end
-
+    print("Mouse Position:", mouse_x, mouse_y)
+    print("Entity's Position:", self.pos.x, self.pos.y)
     return inside
 end
 

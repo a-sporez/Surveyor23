@@ -75,11 +75,11 @@ function love.draw()
     if isMenu() then
         Buttons.drawMenuButtons(stateButtons.menu_state, windowCentreX, windowCentreY)
     elseif isRunning() then
+        Entities.drawGreenEntities()  -- Draw all green entities
+        Entities.drawRedEntities()    -- Draw all red entities
         Collision:draw()
         Console:draw()
         Buttons.drawRunningButtons(stateButtons.running_state)
-        Entities.drawGreenEntities()  -- Draw all green entities
-        Entities.drawRedEntities()    -- Draw all red entities
     end
 end
 
