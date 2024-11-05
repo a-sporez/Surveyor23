@@ -90,8 +90,11 @@ local function moveToTarget(self, dt)
 end
 
 -- Constructor function with base attributes and the base methods above.
-function Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)
+local entityCounter = 0
+function Entities.newEntity(x, y, shapeType, radius, vertices, color, entityType)
+    entityCounter = entityCounter + 1
     local entity = {
+        id = entityCounter,
         pos = vector(x or 100, y or 100),
         target = nil,
         color = color or colors.white,
@@ -105,12 +108,13 @@ function Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)
         radius = radius,
         shape = vertices,
         shapeType = shapeType,
-        userData = userData,
+        userData = 'entity'..entityCounter,
         toggleSelected = toggleSelected,
         checkPressed = checkPressed,
         moveToTarget = moveToTarget,
         draw = Entities.draw
     }
+    entity.name = (entityType or 'entity')..'_'..entityCounter
 
     -- Prepare data table for the collision
     local data = {
@@ -131,7 +135,7 @@ function Entities.newEntity(x, y, shapeType, userData, radius, vertices, color)
             radius = radius,
             x = entity.pos.x,
             y = entity.pos.y,
-            userData = userData
+            userData = entity.userData
         })
     elseif shapeType == 'polygon' then
         entity.body = collision:addEntity('polygon', data)
@@ -174,15 +178,14 @@ function Entities.createGreenEntity(count)
             800 + (i * 50),
             200 + (i * 50),
             'polygon', -- shapeType
-            "greenEntity"..i, -- userData
             nil, -- radius
             {{20, 20},
             {20, -20},
             {-20, -30},
             {-20, 30}},
-            colors.green
+            colors.green,
+            'greenEntity'
         )
-        greenEntity.name = "greenEntity" .. i
         table.insert(Entities.greenEntities, greenEntity)
     end
 end
@@ -195,15 +198,14 @@ function Entities.createRedEntity(count)
             800 + (i * 50),
             200 + (i * 50),
             'polygon', -- shapeType
-            "redEntity"..i, -- userData
             nil, -- radius
             {{20, 20},
             {20, -20},
             {-20, -30},
             {-20, 30}},
-            colors.red
+            colors.red,
+            'redEntity'
         )
-        redEntity.name = "redEntity" .. i
         table.insert(Entities.redEntities, redEntity)
     end
 end
