@@ -3,10 +3,6 @@ local love = require('love')
 --]]
 local collision = {}
 
-local ui_slot_w, ui_slot_h = 220, 22
-local ui_slot1_x = 0
-local ui_slot1_y = love.graphics.getHeight() - ui_slot_h
-
 -- Utility function to print tables recursively, comment out to turn off
 --
 local function deepPrint(value, indent)
@@ -46,7 +42,6 @@ function collision:beginContact(a, b, coll)
     print("Inspecting data for 'b':")
     deepPrint(b)
 end
-
 
 function collision:endContact(a, b, coll)
     print("end contact <"..(

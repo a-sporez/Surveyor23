@@ -15,8 +15,8 @@ Console.config = {
     width = terminalWidth - 40,
     height = terminalHeight - 64,
     fontSize = 22,
-    backColor = colors.oliveGrey,
-    textColor = colors.lightGrey
+    backColor = colors.darkGrey,
+    textColor = colors.oliveGrey
 }
 
 -- This table stores the console input and output as well as history when console is active
