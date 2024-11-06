@@ -108,15 +108,14 @@ function Entities.newEntity(x, y, shapeType, radius, vertices, color, entityType
         radius = radius,
         shape = vertices,
         shapeType = shapeType,
-        userData = 'entity'..entityCounter,
+        userData = entityType..entityCounter,
         toggleSelected = toggleSelected,
         checkPressed = checkPressed,
         moveToTarget = moveToTarget,
         draw = Entities.draw
     }
-    entity.name = (entityType or 'entity')..'_'..entityCounter
 
-    -- Prepare data table for the collision
+-- Prepare data table for the collision
     local data = {
         x = entity.pos.x,
         y = entity.pos.y,
@@ -124,7 +123,7 @@ function Entities.newEntity(x, y, shapeType, radius, vertices, color, entityType
         vertices = {}  -- Start with an empty table
     }
 
-    -- Flatten the vertices to be a single-level table
+-- Flatten the vertices to be a single-level table
     for _, vertex in ipairs(entity.shape) do
         table.insert(data.vertices, vertex[1])
         table.insert(data.vertices, vertex[2])
@@ -144,10 +143,12 @@ function Entities.newEntity(x, y, shapeType, radius, vertices, color, entityType
 end
 
 function Entities.draw(self)
+--[[
     local print_x, print_y = math.floor(self.pos.x), math.floor(self.pos.y)
     love.graphics.print(self.name.."posX:"..print_x.." posY:"..print_y)
     local print_angle = math.ceil(self.angle)
     love.graphics.print("Entity Angle: "..print_angle, 0, 22)
+--]]
     if self.selected then
         love.graphics.setColor(colors.yellow)
     else
@@ -174,11 +175,10 @@ function Entities.createGreenEntity(count)
     local count = count or 5
     for i = 1, count do
         local greenEntity = Entities.newEntity(
-            -- Position
             800 + (i * 50),
             200 + (i * 50),
-            'polygon', -- shapeType
-            nil, -- radius
+            'polygon',
+            nil,
             {{20, 20},
             {20, -20},
             {-20, -30},
@@ -194,11 +194,10 @@ function Entities.createRedEntity(count)
     local count = count or 3
     for i = 1, count do
         local redEntity = Entities.newEntity(
-            -- Position
             800 + (i * 50),
             200 + (i * 50),
-            'polygon', -- shapeType
-            nil, -- radius
+            'polygon',
+            nil,
             {{20, 20},
             {20, -20},
             {-20, -30},
