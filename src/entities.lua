@@ -103,7 +103,7 @@ function Entities.newEntity(x, y, shapeType, radius, vertices, color, entityType
         acceleration = 50,
         deceleration = 25,
         maxVelocity = 100,
-        turnSpeed = math.rad(90),
+        turnSpeed = math.rad(120),
         angle = 0,
         radius = radius,
         shape = vertices,

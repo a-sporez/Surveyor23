@@ -23,6 +23,7 @@ Console.config = {
 Console.state = {
     active = false,
     input = "",
+    cursorPos = 0,
     output = "",
     cmdHistory = {}
 }
@@ -47,14 +48,26 @@ function Console:toggleActive()
     self.state.active = not self.state.active
 end
 
+function Console:moveCursor(direction)
+    if direction == 'left' then
+        self.state.cursorPos = math.max(0, self.state.cursorPos - 1)
+    elseif direction == 'right' then
+        self.state.cursorPos = math.min(#self.state.input, self.state.cursorPos + 1)
+    end
+end
+
 -- Helper function to delete input on backspace.
 function Console:backspace()
-    self.state.input = self.state.input:sub(1, -2)
+    self.state.input = self.state.input:sub(1, self.state.cursorPos - 1)..
+                        self.state.input:sub(self.state.cursorPos + 1)
+    self.state.cursorPos = self.state.cursorPos - 1
 end
 
 -- This function defines where to store the input passed by inputHandler
 function Console:receiveInput(key)
-    self.state.input = self.state.input..key
+    self.state.input = self.state.input:sub(1, self.state.cursorPos)..key..
+                        self.state.input:sub(self.state.cursorPos + 1)
+    self.state.cursorPos = self.state.cursorPos + 1
 end
 
 -- Processing aliases and splitting them into single commands.
@@ -93,6 +106,7 @@ function Console:submitInput()
     self:processCommand(self.state.input)
 -- Clear input line after submit
     self.state.input = ""
+    self.state.cursorPos = 0
 end
 
 function Console:processSingleCommand(command)
@@ -111,6 +125,18 @@ function Console:listAliases()
     end
 end
 
+-- function to make the keyboard cursor blinky
+local blinkInterval = 0.5
+function Console:update(dt)
+    if self.state.active then
+        self.state.blinkTimer = self.state.blinkTimer + dt
+        if self.state.blinkTimer >= blinkInterval then
+            self.state.cursorVisible = not self.state.cursorVisible
+            self.state.blinkTimer = 0
+        end
+    end
+end
+
 function Console:draw()
 -- Draw the terminal frame image at terminalX, terminalY
     love.graphics.draw(self.terminal_1, terminalX, terminalY)
@@ -125,16 +151,23 @@ function Console:draw()
     love.graphics.setColor(self.config.textColor)
 
 -- Print each line of the command history
-    local maxLines = math.floor(self.config.height / self.config.fontSize) - 1
-    for i = 1, math.min(#self.state.cmdHistory, maxLines) do
-        local line = self.state.cmdHistory[i]
+    if Console.state.active then
+        local maxLines = math.floor(self.config.height / self.config.fontSize) - 1
+        for i = 1, math.min(#self.state.cmdHistory, maxLines) do
+            local line = self.state.cmdHistory[i]
+            love.graphics.print(
+                line, self.config.posX + 4, self.config.posY + (i - 1) * self.config.fontSize
+            )
+        end
+        local inputDisplay = self.state.input:sub(1, self.state.cursorPos)
+        if self.state.cursorVisible then
+            inputDisplay = inputDisplay.."|"
+        end
+        inputDisplay = inputDisplay..self.state.input:sub(self.state.cursorPos + 1)
         love.graphics.print(
-            line, self.config.posX + 4, self.config.posY + (i - 1) * self.config.fontSize
+            inputDisplay, self.config.posX + 10, self.config.posY + self.config.height - self.config.fontSize
         )
     end
-    love.graphics.print(
-        self.state.input, self.config.posX + 10, self.config.posY + self.config.height - self.config.fontSize
-    )
 
 -- Reset to default color
     love.graphics.setColor(1, 1, 1)

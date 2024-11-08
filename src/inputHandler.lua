@@ -38,6 +38,10 @@ function inputHandler.keypressed(key)
 -- Passing the backspace input to remove characters to console
             if key == 'backspace' then
                 Console:backspace()
+            elseif key == 'left' then
+                Console:moveCursor('left')
+            elseif key == 'right' then
+                Console:moveCursor('right')
 --[[ Only process printable characters.
 TODO: this is a workaround to avoid registering the key functions "shift, ctrl..."
 I have to find out how to register fn keys without printing.
