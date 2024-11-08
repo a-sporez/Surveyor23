@@ -25,7 +25,9 @@ Console.state = {
     input = "",
     cursorPos = 0,
     output = "",
-    cmdHistory = {}
+    cmdHistory = {},
+    cursorVisible = true,
+    blinkTimer = 0
 }
 
 -- This function loads the module assets and initializes it in love.load.
