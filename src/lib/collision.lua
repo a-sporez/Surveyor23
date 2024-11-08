@@ -63,12 +63,12 @@ function collision:addEntity(shapeType, data)
     local shape
     if shapeType == "polygon" then
         if not data.vertices or #data.vertices < 6 then
-            error("Expected a minimum of 3 vertices for polygon, got " .. (data.vertices and #data.vertices / 2 or 0))
+            error("Expected min 3 vertices, got "..(data.vertices and #data.vertices / 2 or 0))
         end
 -- Print each vertex to check the actual values
         print("Creating polygon with vertices:")
         for i = 1, #data.vertices, 2 do
-            print("Vertex " .. (i / 2 + 0.5) .. ": (" .. data.vertices[i] .. ", " .. data.vertices[i + 1] .. ")")
+            print("Vertex "..(i / 2 + 0.5)..": ("..data.vertices[i]..", "..data.vertices[i + 1]..")")
         end
         shape = love.physics.newPolygonShape(data.vertices)
     elseif shapeType == "circle" then
@@ -85,7 +85,6 @@ end
 
 function collision:update(dt)
     self.worldMesh:update(dt * 0.001)
---    print(self.worldMesh:getContacts())
 end
 
 function collision:draw()
